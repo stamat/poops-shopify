@@ -1,0 +1,34 @@
+{
+  "country": {
+    "name": "Canada",
+    "iso_code": "CA",
+    "currency": { "iso_code": "CAD", "symbol": "$" },
+    "popular?": false
+  },
+  "language": {
+    "iso_code": "en",
+    "endonym_name": "English",
+    "name": "English"
+  },
+  "available_languages": [
+    { "iso_code": "en", "endonym_name": "English", "name": "English" }
+  ],
+  "available_countries": [
+    { "name": "Australia", "iso_code": "AU", "currency": { "iso_code": "AUD", "symbol": "$" }, "popular?": false },
+    { "name": "Brazil", "iso_code": "BR", "currency": { "iso_code": "BRL", "symbol": "R$" }, "popular?": false },
+    { "name": "Canada", "iso_code": "CA", "currency": { "iso_code": "CAD", "symbol": "$" }, "popular?": true },
+    { "name": "China", "iso_code": "CN", "currency": { "iso_code": "CNY", "symbol": "¥" }, "popular?": false },
+    { "name": "Egypt", "iso_code": "EG", "currency": { "iso_code": "EGP", "symbol": "ج.م" }, "popular?": false },
+    { "name": "France", "iso_code": "FR", "currency": { "iso_code": "EUR", "symbol": "€" }, "popular?": false },
+    { "name": "Germany", "iso_code": "DE", "currency": { "iso_code": "EUR", "symbol": "€" }, "popular?": false },
+    { "name": "Italy", "iso_code": "IT", "currency": { "iso_code": "EUR", "symbol": "€" }, "popular?": false },
+    { "name": "Japan", "iso_code": "JP", "currency": { "iso_code": "JPY", "symbol": "¥" }, "popular?": false },
+    { "name": "Mexico", "iso_code": "MX", "currency": { "iso_code": "MXN", "symbol": "$" }, "popular?": false },
+    { "name": "New Zealand", "iso_code": "NZ", "currency": { "iso_code": "NZD", "symbol": "$" }, "popular?": false },
+    { "name": "Spain", "iso_code": "ES", "currency": { "iso_code": "EUR", "symbol": "€" }, "popular?": false },
+    { "name": "Switzerland", "iso_code": "CH", "currency": { "iso_code": "CHF", "symbol": "CHF" }, "popular?": false },
+    { "name": "Türkiye", "iso_code": "TR", "currency": { "iso_code": "TRY", "symbol": "₺" }, "popular?": false },
+    { "name": "United Kingdom", "iso_code": "GB", "currency": { "iso_code": "GBP", "symbol": "£" }, "popular?": false },
+    { "name": "United States", "iso_code": "US", "currency": { "iso_code": "USD", "symbol": "$" }, "popular?": true }
+  ]
+}

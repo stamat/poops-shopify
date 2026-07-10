@@ -1,0 +1,9 @@
+{
+  "name": "Dawn",
+  "email": "dev@example.com",
+  "currency": "USD",
+  "money_format": "${{ amount }}",
+  "url": "http://localhost:4141",
+  "domain": "localhost",
+  "enabled_payment_types": ["visa", "master", "american_express", "paypal", "diners_club", "discover"]
+}

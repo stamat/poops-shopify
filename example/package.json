@@ -1,0 +1,15 @@
+{
+  "name": "poops-shopify-example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "poops",
+    "build": "poops -b",
+    "check": "shopify theme check --path theme",
+    "push": "shopify theme push --path theme"
+  },
+  "dependencies": {
+    "poops": "^1.3.0",
+    "poops-shopify": "file:.."
+  }
+}

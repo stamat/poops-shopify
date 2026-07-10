@@ -1,0 +1,35 @@
+{
+  "name": "poops-shopify",
+  "description": "Shopify Liquid engine for poops — develop Shopify themes locally with mock data, push the theme dir as-is.",
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stamat/poops-shopify.git"
+  },
+  "files": [
+    "index.js",
+    "lib/"
+  ],
+  "author": "Stamat <@stamat> (http://stamat.info)",
+  "keywords": [
+    "shopify",
+    "liquid",
+    "theme",
+    "poops",
+    "liquidjs"
+  ],
+  "scripts": {
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@jest/globals": "^30.2.0",
+    "eslint": "^9.39.3",
+    "jest": "^30.2.0",
+    "neostandard": "^0.12.2",
+    "poops": "^1.3.0"
+  }
+}

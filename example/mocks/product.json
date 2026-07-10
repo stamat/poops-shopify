@@ -1,0 +1,524 @@
+{
+  "id": 6920737783897,
+  "title": "Puff",
+  "handle": "puff-olive-leaf",
+  "url": "/products/puff-olive-leaf",
+  "description": "<p><meta charset=\"utf-8\"><i>This is a demonstration store. You can purchase products like this from <a href=\"https://www.mlouye.com/\" target=\"_blank\">Mlouye</a>.</i></p>\n<p>A streamlined approach to daily essentials: The Puff is a super soft and organic clutch designed to hold your laptop and all your office essentials. This lightly padded, soft-as-a-pillow carry-all comes in two sizes: 13” and 16” to fit most laptops.</p>",
+  "content": "<p><meta charset=\"utf-8\"><i>This is a demonstration store. You can purchase products like this from <a href=\"https://www.mlouye.com/\" target=\"_blank\">Mlouye</a>.</i></p>\n<p>A streamlined approach to daily essentials: The Puff is a super soft and organic clutch designed to hold your laptop and all your office essentials. This lightly padded, soft-as-a-pillow carry-all comes in two sizes: 13” and 16” to fit most laptops.</p>",
+  "vendor": "Mlouye",
+  "type": "",
+  "tags": [
+    "handbag",
+    "tote"
+  ],
+  "available": true,
+  "price": 46500,
+  "price_min": 46500,
+  "price_max": 46500,
+  "price_varies": false,
+  "compare_at_price": null,
+  "compare_at_price_min": 0,
+  "compare_at_price_max": 0,
+  "compare_at_price_varies": false,
+  "featured_media": {
+    "id": 28631609245785,
+    "media_type": "image",
+    "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-leaf-1_d53c2dd6-b753-432a-85bd-373334b72994.jpg?v=1637108187",
+    "width": 1600,
+    "height": 1600,
+    "aspect_ratio": 1,
+    "alt": "Puff",
+    "preview_image": {
+      "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-leaf-1_d53c2dd6-b753-432a-85bd-373334b72994.jpg?v=1637108187",
+      "width": 1600,
+      "height": 1600,
+      "aspect_ratio": 1
+    }
+  },
+  "featured_image": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-leaf-1_d53c2dd6-b753-432a-85bd-373334b72994.jpg?v=1637108187",
+  "media": [
+    {
+      "id": 28631609245785,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-leaf-1_d53c2dd6-b753-432a-85bd-373334b72994.jpg?v=1637108187",
+      "width": 1600,
+      "height": 1600,
+      "aspect_ratio": 1,
+      "alt": "Puff",
+      "preview_image": {
+        "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-leaf-1_d53c2dd6-b753-432a-85bd-373334b72994.jpg?v=1637108187",
+        "width": 1600,
+        "height": 1600,
+        "aspect_ratio": 1
+      }
+    },
+    {
+      "id": 28631609278553,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-leaf-2_7425d608-c707-4ce2-b11f-70e997e98c1e.jpg?v=1637108187",
+      "width": 1600,
+      "height": 1600,
+      "aspect_ratio": 1,
+      "alt": "Puff",
+      "preview_image": {
+        "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-leaf-2_7425d608-c707-4ce2-b11f-70e997e98c1e.jpg?v=1637108187",
+        "width": 1600,
+        "height": 1600,
+        "aspect_ratio": 1
+      }
+    },
+    {
+      "id": 28631609311321,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-leaf-3_fc8f937d-54ee-4797-81a5-2610375cee06.jpg?v=1637108187",
+      "width": 1600,
+      "height": 1600,
+      "aspect_ratio": 1,
+      "alt": "Puff",
+      "preview_image": {
+        "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-leaf-3_fc8f937d-54ee-4797-81a5-2610375cee06.jpg?v=1637108187",
+        "width": 1600,
+        "height": 1600,
+        "aspect_ratio": 1
+      }
+    },
+    {
+      "id": 28631609344089,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-leaf-4_467af058-6655-41d3-af59-0ce70f157365.jpg?v=1637108187",
+      "width": 1600,
+      "height": 1600,
+      "aspect_ratio": 1,
+      "alt": "Puff",
+      "preview_image": {
+        "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-leaf-4_467af058-6655-41d3-af59-0ce70f157365.jpg?v=1637108187",
+        "width": 1600,
+        "height": 1600,
+        "aspect_ratio": 1
+      }
+    },
+    {
+      "id": 28631609376857,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-emerald-1_ac28319e-13b7-4cfa-9765-e4aca3a91e40.jpg?v=1637108187",
+      "width": 1600,
+      "height": 1600,
+      "aspect_ratio": 1,
+      "alt": "Puff",
+      "preview_image": {
+        "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-emerald-1_ac28319e-13b7-4cfa-9765-e4aca3a91e40.jpg?v=1637108187",
+        "width": 1600,
+        "height": 1600,
+        "aspect_ratio": 1
+      }
+    },
+    {
+      "id": 28631609409625,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-emerald-2_430db60a-0351-43e3-8448-71c770ef04cc.jpg?v=1637108187",
+      "width": 1600,
+      "height": 1600,
+      "aspect_ratio": 1,
+      "alt": "Puff",
+      "preview_image": {
+        "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-emerald-2_430db60a-0351-43e3-8448-71c770ef04cc.jpg?v=1637108187",
+        "width": 1600,
+        "height": 1600,
+        "aspect_ratio": 1
+      }
+    },
+    {
+      "id": 28631609442393,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-chocolate-1_2b1572de-a253-4993-ad9e-ff808cbb84bd.jpg?v=1637108187",
+      "width": 1600,
+      "height": 1600,
+      "aspect_ratio": 1,
+      "alt": "Puff",
+      "preview_image": {
+        "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-chocolate-1_2b1572de-a253-4993-ad9e-ff808cbb84bd.jpg?v=1637108187",
+        "width": 1600,
+        "height": 1600,
+        "aspect_ratio": 1
+      }
+    },
+    {
+      "id": 28631609475161,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-chocolate-2_53054afb-aa3d-4d4e-8d9a-373395bc310b.jpg?v=1637108187",
+      "width": 1600,
+      "height": 1600,
+      "aspect_ratio": 1,
+      "alt": "Puff",
+      "preview_image": {
+        "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-chocolate-2_53054afb-aa3d-4d4e-8d9a-373395bc310b.jpg?v=1637108187",
+        "width": 1600,
+        "height": 1600,
+        "aspect_ratio": 1
+      }
+    },
+    {
+      "id": 28631609507929,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-latte-1_6a86d96d-defd-4c09-a4a1-f897c963ba1c.jpg?v=1637108187",
+      "width": 1600,
+      "height": 1600,
+      "aspect_ratio": 1,
+      "alt": "Puff",
+      "preview_image": {
+        "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-latte-1_6a86d96d-defd-4c09-a4a1-f897c963ba1c.jpg?v=1637108187",
+        "width": 1600,
+        "height": 1600,
+        "aspect_ratio": 1
+      }
+    },
+    {
+      "id": 28631609540697,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-latte-2_e4edba8c-1fdc-4b30-8747-0199684eb80a.jpg?v=1637108187",
+      "width": 1600,
+      "height": 1600,
+      "aspect_ratio": 1,
+      "alt": "Puff",
+      "preview_image": {
+        "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-latte-2_e4edba8c-1fdc-4b30-8747-0199684eb80a.jpg?v=1637108187",
+        "width": 1600,
+        "height": 1600,
+        "aspect_ratio": 1
+      }
+    },
+    {
+      "id": 28631609573465,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-pastel-1_857861b2-fc79-4dac-986c-28d517faff7e.jpg?v=1637108187",
+      "width": 1600,
+      "height": 1600,
+      "aspect_ratio": 1,
+      "alt": "Puff",
+      "preview_image": {
+        "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-pastel-1_857861b2-fc79-4dac-986c-28d517faff7e.jpg?v=1637108187",
+        "width": 1600,
+        "height": 1600,
+        "aspect_ratio": 1
+      }
+    },
+    {
+      "id": 28631609606233,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-pastel-2_c020bf3c-79d0-45e9-8f81-70e3dc9214e5.jpg?v=1637108187",
+      "width": 1600,
+      "height": 1600,
+      "aspect_ratio": 1,
+      "alt": "Puff",
+      "preview_image": {
+        "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-pastel-2_c020bf3c-79d0-45e9-8f81-70e3dc9214e5.jpg?v=1637108187",
+        "width": 1600,
+        "height": 1600,
+        "aspect_ratio": 1
+      }
+    },
+    {
+      "id": 28631609639001,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-pink-cloud-1_1564bda6-f68d-4a90-b044-8c9f8704ad21.jpg?v=1637108187",
+      "width": 1600,
+      "height": 1600,
+      "aspect_ratio": 1,
+      "alt": "Puff",
+      "preview_image": {
+        "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-pink-cloud-1_1564bda6-f68d-4a90-b044-8c9f8704ad21.jpg?v=1637108187",
+        "width": 1600,
+        "height": 1600,
+        "aspect_ratio": 1
+      }
+    },
+    {
+      "id": 28631609671769,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-pink-cloud-2_586a88c5-4cf9-424c-a3d1-a7620da24e1e.jpg?v=1637108187",
+      "width": 1600,
+      "height": 1600,
+      "aspect_ratio": 1,
+      "alt": "Puff",
+      "preview_image": {
+        "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-pink-cloud-2_586a88c5-4cf9-424c-a3d1-a7620da24e1e.jpg?v=1637108187",
+        "width": 1600,
+        "height": 1600,
+        "aspect_ratio": 1
+      }
+    }
+  ],
+  "images": [
+    "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-leaf-1_d53c2dd6-b753-432a-85bd-373334b72994.jpg?v=1637108187",
+    "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-leaf-2_7425d608-c707-4ce2-b11f-70e997e98c1e.jpg?v=1637108187",
+    "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-leaf-3_fc8f937d-54ee-4797-81a5-2610375cee06.jpg?v=1637108187",
+    "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-leaf-4_467af058-6655-41d3-af59-0ce70f157365.jpg?v=1637108187",
+    "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-emerald-1_ac28319e-13b7-4cfa-9765-e4aca3a91e40.jpg?v=1637108187",
+    "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-emerald-2_430db60a-0351-43e3-8448-71c770ef04cc.jpg?v=1637108187",
+    "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-chocolate-1_2b1572de-a253-4993-ad9e-ff808cbb84bd.jpg?v=1637108187",
+    "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-chocolate-2_53054afb-aa3d-4d4e-8d9a-373395bc310b.jpg?v=1637108187",
+    "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-latte-1_6a86d96d-defd-4c09-a4a1-f897c963ba1c.jpg?v=1637108187",
+    "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-latte-2_e4edba8c-1fdc-4b30-8747-0199684eb80a.jpg?v=1637108187",
+    "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-pastel-1_857861b2-fc79-4dac-986c-28d517faff7e.jpg?v=1637108187",
+    "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-pastel-2_c020bf3c-79d0-45e9-8f81-70e3dc9214e5.jpg?v=1637108187",
+    "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-pink-cloud-1_1564bda6-f68d-4a90-b044-8c9f8704ad21.jpg?v=1637108187",
+    "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-pink-cloud-2_586a88c5-4cf9-424c-a3d1-a7620da24e1e.jpg?v=1637108187"
+  ],
+  "variants": [
+    {
+      "id": 39577056936025,
+      "title": "Olive Leaf",
+      "price": 46500,
+      "compare_at_price": null,
+      "available": false,
+      "sku": "10-039-065",
+      "option1": "Olive Leaf",
+      "option2": null,
+      "option3": null,
+      "options": [
+        "Olive Leaf"
+      ],
+      "featured_media": {
+        "id": 28631609245785,
+        "media_type": "image",
+        "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-leaf-1_d53c2dd6-b753-432a-85bd-373334b72994.jpg?v=1637108187",
+        "width": 1600,
+        "height": 1600,
+        "aspect_ratio": 1,
+        "alt": "Puff",
+        "preview_image": {
+          "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-leaf-1_d53c2dd6-b753-432a-85bd-373334b72994.jpg?v=1637108187",
+          "width": 1600,
+          "height": 1600,
+          "aspect_ratio": 1
+        }
+      }
+    },
+    {
+      "id": 39577056968793,
+      "title": "Emerald",
+      "price": 46500,
+      "compare_at_price": null,
+      "available": true,
+      "sku": "10-039-066",
+      "option1": "Emerald",
+      "option2": null,
+      "option3": null,
+      "options": [
+        "Emerald"
+      ],
+      "featured_media": {
+        "id": 28631609376857,
+        "media_type": "image",
+        "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-emerald-1_ac28319e-13b7-4cfa-9765-e4aca3a91e40.jpg?v=1637108187",
+        "width": 1600,
+        "height": 1600,
+        "aspect_ratio": 1,
+        "alt": "Puff",
+        "preview_image": {
+          "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-emerald-1_ac28319e-13b7-4cfa-9765-e4aca3a91e40.jpg?v=1637108187",
+          "width": 1600,
+          "height": 1600,
+          "aspect_ratio": 1
+        }
+      }
+    },
+    {
+      "id": 39577057001561,
+      "title": "Chocolate",
+      "price": 46500,
+      "compare_at_price": null,
+      "available": true,
+      "sku": "10-039-067",
+      "option1": "Chocolate",
+      "option2": null,
+      "option3": null,
+      "options": [
+        "Chocolate"
+      ],
+      "featured_media": {
+        "id": 28631609442393,
+        "media_type": "image",
+        "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-chocolate-1_2b1572de-a253-4993-ad9e-ff808cbb84bd.jpg?v=1637108187",
+        "width": 1600,
+        "height": 1600,
+        "aspect_ratio": 1,
+        "alt": "Puff",
+        "preview_image": {
+          "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-chocolate-1_2b1572de-a253-4993-ad9e-ff808cbb84bd.jpg?v=1637108187",
+          "width": 1600,
+          "height": 1600,
+          "aspect_ratio": 1
+        }
+      }
+    },
+    {
+      "id": 39577057034329,
+      "title": "Latte",
+      "price": 46500,
+      "compare_at_price": null,
+      "available": true,
+      "sku": "10-039-068",
+      "option1": "Latte",
+      "option2": null,
+      "option3": null,
+      "options": [
+        "Latte"
+      ],
+      "featured_media": {
+        "id": 28631609507929,
+        "media_type": "image",
+        "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-latte-1_6a86d96d-defd-4c09-a4a1-f897c963ba1c.jpg?v=1637108187",
+        "width": 1600,
+        "height": 1600,
+        "aspect_ratio": 1,
+        "alt": "Puff",
+        "preview_image": {
+          "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-latte-1_6a86d96d-defd-4c09-a4a1-f897c963ba1c.jpg?v=1637108187",
+          "width": 1600,
+          "height": 1600,
+          "aspect_ratio": 1
+        }
+      }
+    },
+    {
+      "id": 39577057067097,
+      "title": "Pastel",
+      "price": 46500,
+      "compare_at_price": null,
+      "available": true,
+      "sku": "10-039-069",
+      "option1": "Pastel",
+      "option2": null,
+      "option3": null,
+      "options": [
+        "Pastel"
+      ],
+      "featured_media": {
+        "id": 28631609573465,
+        "media_type": "image",
+        "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-pastel-1_857861b2-fc79-4dac-986c-28d517faff7e.jpg?v=1637108187",
+        "width": 1600,
+        "height": 1600,
+        "aspect_ratio": 1,
+        "alt": "Puff",
+        "preview_image": {
+          "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-pastel-1_857861b2-fc79-4dac-986c-28d517faff7e.jpg?v=1637108187",
+          "width": 1600,
+          "height": 1600,
+          "aspect_ratio": 1
+        }
+      }
+    },
+    {
+      "id": 39577057099865,
+      "title": "Pink Cloud",
+      "price": 46500,
+      "compare_at_price": null,
+      "available": true,
+      "sku": "10-039-070",
+      "option1": "Pink Cloud",
+      "option2": null,
+      "option3": null,
+      "options": [
+        "Pink Cloud"
+      ],
+      "featured_media": {
+        "id": 28631609639001,
+        "media_type": "image",
+        "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-pink-cloud-1_1564bda6-f68d-4a90-b044-8c9f8704ad21.jpg?v=1637108187",
+        "width": 1600,
+        "height": 1600,
+        "aspect_ratio": 1,
+        "alt": "Puff",
+        "preview_image": {
+          "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-pink-cloud-1_1564bda6-f68d-4a90-b044-8c9f8704ad21.jpg?v=1637108187",
+          "width": 1600,
+          "height": 1600,
+          "aspect_ratio": 1
+        }
+      }
+    }
+  ],
+  "variants_count": 6,
+  "first_available_variant": {
+    "id": 39577056968793,
+    "title": "Emerald",
+    "price": 46500,
+    "compare_at_price": null,
+    "available": true,
+    "sku": "10-039-066",
+    "option1": "Emerald",
+    "option2": null,
+    "option3": null,
+    "options": [
+      "Emerald"
+    ],
+    "featured_media": {
+      "id": 28631609376857,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-emerald-1_ac28319e-13b7-4cfa-9765-e4aca3a91e40.jpg?v=1637108187",
+      "width": 1600,
+      "height": 1600,
+      "aspect_ratio": 1,
+      "alt": "Puff",
+      "preview_image": {
+        "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-emerald-1_ac28319e-13b7-4cfa-9765-e4aca3a91e40.jpg?v=1637108187",
+        "width": 1600,
+        "height": 1600,
+        "aspect_ratio": 1
+      }
+    }
+  },
+  "selected_or_first_available_variant": {
+    "id": 39577056968793,
+    "title": "Emerald",
+    "price": 46500,
+    "compare_at_price": null,
+    "available": true,
+    "sku": "10-039-066",
+    "option1": "Emerald",
+    "option2": null,
+    "option3": null,
+    "options": [
+      "Emerald"
+    ],
+    "featured_media": {
+      "id": 28631609376857,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-emerald-1_ac28319e-13b7-4cfa-9765-e4aca3a91e40.jpg?v=1637108187",
+      "width": 1600,
+      "height": 1600,
+      "aspect_ratio": 1,
+      "alt": "Puff",
+      "preview_image": {
+        "src": "https://cdn.shopify.com/s/files/1/0551/9242/0441/products/mlouye-puff-olive-emerald-1_ac28319e-13b7-4cfa-9765-e4aca3a91e40.jpg?v=1637108187",
+        "width": 1600,
+        "height": 1600,
+        "aspect_ratio": 1
+      }
+    }
+  },
+  "selected_variant": null,
+  "has_only_default_variant": false,
+  "quantity_price_breaks_configured": false,
+  "metafields": {},
+  "options": [
+    "Color"
+  ],
+  "options_with_values": [
+    {
+      "name": "Color",
+      "position": 1,
+      "values": [
+        "Olive Leaf",
+        "Emerald",
+        "Chocolate",
+        "Latte",
+        "Pastel",
+        "Pink Cloud"
+      ],
+      "selected_value": "Emerald"
+    }
+  ]
+}

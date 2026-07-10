@@ -1,0 +1,4 @@
+node_modules
+example/dist
+example/dist-dawn
+.DS_Store

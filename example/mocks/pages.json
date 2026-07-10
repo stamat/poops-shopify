@@ -1,0 +1,26 @@
+{
+  "lookbook": {
+    "id": 2001,
+    "title": "Lookbook",
+    "handle": "lookbook",
+    "url": "/pages/lookbook",
+    "template_suffix": "",
+    "content": "<p>Our seasonal lookbook — the full Mlouye range styled and shot for the Dawn demo store.</p><p>This is a demonstration page rendered locally by poops-shopify with mock data.</p>"
+  },
+  "about": {
+    "id": 2002,
+    "title": "About us",
+    "handle": "about",
+    "url": "/pages/about",
+    "template_suffix": "",
+    "content": "<p>We design streamlined leather goods for everyday carry. This About page is mock content for local theme development.</p>"
+  },
+  "contact": {
+    "id": 2003,
+    "title": "Contact us",
+    "handle": "contact",
+    "url": "/pages/contact",
+    "template_suffix": "contact",
+    "content": "<p>Questions about an order? Send us a message and we'll get back to you.</p>"
+  }
+}

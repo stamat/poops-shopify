@@ -1,0 +1,35 @@
+{
+  "scripts": [{
+    "in": "src/js/theme.js",
+    "out": "theme/assets/theme.js",
+    "options": {
+      "minify": true,
+      "format": "iife",
+      "target": "es2019"
+    }
+  }],
+  "styles": [{
+    "in": "src/scss/theme.scss",
+    "out": "theme/assets/theme.css",
+    "options": {
+      "minify": true
+    }
+  }],
+  "markup": {
+    "in": "theme",
+    "out": "dist",
+    "engine": "poops-shopify",
+    "includePaths": ["layout", "sections", "snippets", "config", "locales", "assets"],
+    "data": ["../mocks"]
+  },
+  "copy": [{
+    "in": "theme/assets",
+    "out": "dist"
+  }],
+  "serve": {
+    "port": 4141,
+    "base": "/dist"
+  },
+  "livereload": true,
+  "watch": ["theme", "src", "mocks"]
+}

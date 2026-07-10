@@ -1,0 +1,26 @@
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+}
+
+.site-header,
+.site-footer {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #222;
+  color: #fff;
+
+  a {
+    color: #fff;
+  }
+}
+
+.product-card {
+  max-width: 16rem;
+
+  &__image {
+    max-width: 100%;
+  }
+}

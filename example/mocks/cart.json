@@ -1,0 +1,13 @@
+{
+  "item_count": 2,
+  "total_price": 3700,
+  "items": [
+    {
+      "title": "Enamel Mug",
+      "quantity": 2,
+      "price": 1850,
+      "line_price": 3700,
+      "url": "/products/enamel-mug"
+    }
+  ]
+}

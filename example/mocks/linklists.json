@@ -1,0 +1,64 @@
+{
+  "main-menu": {
+    "title": "Main menu",
+    "handle": "main-menu",
+    "levels": 2,
+    "links": [
+      {
+        "title": "Bags",
+        "url": "/collections/bags",
+        "active": false,
+        "child_active": false,
+        "levels": 1,
+        "links": [
+          { "title": "Shop all", "url": "/collections/bags", "links": [] },
+          { "title": "Tote bags", "url": "/collections/bags", "links": [] },
+          { "title": "Shoulder bags", "url": "/collections/bags", "links": [] },
+          { "title": "Crossbody bags", "url": "/collections/bags", "links": [] },
+          { "title": "Top handle bags", "url": "/collections/bags", "links": [] },
+          { "title": "Mini bags", "url": "/collections/bags", "links": [] }
+        ]
+      },
+      {
+        "title": "Shoes",
+        "url": "/collections/shoes",
+        "active": false,
+        "child_active": false,
+        "levels": 1,
+        "links": [
+          { "title": "Sandals", "url": "/collections/shoes", "links": [] },
+          { "title": "Boots", "url": "/collections/shoes", "links": [] }
+        ]
+      },
+      {
+        "title": "Lookbook",
+        "url": "/pages/lookbook",
+        "active": false,
+        "child_active": false,
+        "levels": 0,
+        "links": []
+      }
+    ]
+  },
+  "footer": {
+    "title": "Quick links",
+    "handle": "footer",
+    "levels": 1,
+    "links": [
+      { "title": "Bags", "url": "/collections/bags", "links": [] },
+      { "title": "Shoes", "url": "/collections/shoes", "links": [] },
+      { "title": "Lookbook", "url": "/pages/lookbook", "links": [] }
+    ]
+  },
+  "info": {
+    "title": "Info",
+    "handle": "info",
+    "levels": 1,
+    "links": [
+      { "title": "About", "url": "/pages/about", "links": [] },
+      { "title": "Contact us", "url": "/pages/contact", "links": [] },
+      { "title": "Shipping policy", "url": "/policies/shipping-policy", "links": [] },
+      { "title": "Blog", "url": "/blogs/news", "links": [] }
+    ]
+  }
+}
