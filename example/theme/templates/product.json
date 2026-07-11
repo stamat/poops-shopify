@@ -33,7 +33,7 @@
           "type": "collapsible_tab",
           "settings": {
             "heading": "Materials",
-            "icon": "none",
+            "icon": "leather",
             "content": "<p>w:35 X h:23 cm (14 X 9 in)</p>",
             "page": ""
           }
@@ -42,7 +42,7 @@
           "type": "collapsible_tab",
           "settings": {
             "heading": "Shipping & Returns",
-            "icon": "none",
+            "icon": "truck",
             "content": "<p>Free shipping and returns available on all orders!<br><br>We ship all US domestic orders within <strong>5-10 business days</strong>!</p>",
             "page": ""
           }
@@ -51,7 +51,7 @@
           "type": "collapsible_tab",
           "settings": {
             "heading": "Dimensions",
-            "icon": "none",
+            "icon": "ruler",
             "content": "<p>Hand-crafted from Italian nappa leather. Microsuede interior. Filled with soft padding to keep your laptop protected. Comes with detachable handle/short shoulder strap.</p>",
             "page": ""
           }
@@ -60,7 +60,7 @@
           "type": "collapsible_tab",
           "settings": {
             "heading": "Care Instructions",
-            "icon": "none",
+            "icon": "washing",
             "content": "<p>Use a soft damp cloth and a drop of mild soap to remove any haze. Air dry.</p>",
             "page": ""
           }

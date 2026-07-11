@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import ShopifyEngine from '../index.js'
-import { handleize, translate, formatMoney, toDate, strftime, shopifyColor, colorizeSettings, shopifyFont, modifyFont } from '../lib/shopify-helpers.js'
+import { handleize, translate, formatMoney, toDate, toDisplayDate, strftime, shopifyColor, colorizeSettings, shopifyFont, modifyFont } from '../lib/shopify-helpers.js'
 import { extractSchema, stripSchema, loadThemeSettings } from '../lib/theme.js'
 
 let themeDir
@@ -125,6 +125,20 @@ describe('rendering', () => {
       expect(fs.existsSync(page)).toBe(true)
       expect(fs.readFileSync(page, 'utf-8')).toContain('<h2>Cup</h2>')
     }
+  })
+
+  it('fakes the recommendations drop from mock products, excluding the current one', async() => {
+    write('templates/product.recs.liquid', 'performed={{ recommendations.performed }} recs={% for p in recommendations.products %}{{ p.handle }},{% endfor %}')
+    const engine = makeEngine()
+    engine.setGlobal('product', { handle: 'sample' })
+    engine.setGlobal('all_products', {
+      'sample': { handle: 'sample' },
+      'other-a': { handle: 'other-a' },
+      'other-b': { handle: 'other-b' }
+    })
+    const html = await engine.render(path.join(themeDir, 'templates', 'product.recs.liquid'), { page: {}, product: engine.globals.product })
+    expect(html).toContain('performed=true')
+    expect(html).toContain('recs=other-a,other-b,')
   })
 
   it('item_count_for_variant sums cart quantities for a variant (not the cart object)', async() => {
@@ -409,6 +423,16 @@ describe('helpers', () => {
     const src = 'x{% schema %}{ "name": "{{ product.title }}" }{% endschema %}y'
     expect(extractSchema(src)).toEqual({ name: '{{ product.title }}' })
     expect(stripSchema(src)).toBe('xy')
+  })
+
+  it('toDisplayDate reads the ISO offset wall-clock, not the server timezone', () => {
+    // -07:00 "Jan 18 17:24" must stay Jan 18 regardless of the machine's tz —
+    // the old toDate path would roll to Jan 19 east of UTC.
+    const d = toDisplayDate('2022-01-18T17:24:12-07:00')
+    expect(strftime(d, '%B %d, %Y')).toBe('January 18, 2022')
+    expect(strftime(d, '%I:%M %p')).toBe('05:24 PM')
+    // non-ISO inputs still flow through toDate (local 'now')
+    expect(strftime(toDisplayDate('now'), '%Y')).toBe(String(new Date().getFullYear()))
   })
 
   it('loadThemeSettings resolves string presets', () => {

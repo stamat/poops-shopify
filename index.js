@@ -155,6 +155,16 @@ export default class ShopifyEngine extends LiquidEngine {
       ctx._extraGlobals = { ...(ctx._extraGlobals || {}), customer: null }
     }
 
+    // Shopify computes `recommendations` per product against a live store. No
+    // store locally — fake it with the other mocked products so related-products
+    // / complementary-products sections render. Skipped entirely when a user
+    // recommendations.json mock already provides the global.
+    if (!this.globals.recommendations && (name === 'product' || name.startsWith('product.'))) {
+      const recommendations = this.fakeRecommendations(this.globals.product && this.globals.product.handle)
+      ctx.recommendations = recommendations
+      ctx._extraGlobals = { ...(ctx._extraGlobals || {}), recommendations }
+    }
+
     // Shopify computes link.current/active/child_active per requested URL —
     // themes underline the current page in the nav. Rebuild linklists with
     // those flags for this page's route.
@@ -230,12 +240,22 @@ export default class ShopifyEngine extends LiquidEngine {
       if (!res || !res.handle) continue
       if (cfg.suffix !== undefined && (res.template_suffix || '') !== cfg.suffix) continue
       const linklists = this.linklistsFor(res.url)
+      // product pages recommend around themselves, not around the canonical product
+      const recommendations = cfg.key === 'product' && !this.globals.recommendations
+        ? this.fakeRecommendations(res.handle)
+        : null
       const rctx = {
         ...ctx,
         [cfg.key]: res,
         relativePathPrefix: prefix,
         ...(linklists ? { linklists } : {}),
-        _extraGlobals: { ...(ctx._extraGlobals || {}), [cfg.key]: res, ...(linklists ? { linklists } : {}) }
+        ...(recommendations ? { recommendations } : {}),
+        _extraGlobals: {
+          ...(ctx._extraGlobals || {}),
+          [cfg.key]: res,
+          ...(linklists ? { linklists } : {}),
+          ...(recommendations ? { recommendations } : {})
+        }
       }
       const content = await this.renderSectionList(tpl.sections || {}, tpl.order, rctx)
       const html = await this.wrapInLayout(content, rctx, layoutSpec)
@@ -272,6 +292,11 @@ export default class ShopifyEngine extends LiquidEngine {
 
   resourceTemplate(name) {
     if (name === 'collection') return { key: 'collection', dict: 'collections', route: 'collections' }
+    // Products with a full all_products mock entry get a real per-product render
+    // (own price/availability/gallery); emitProductAliases has already written
+    // sample-page copies for every handle, so these overwrite the copies and any
+    // handle without an all_products entry keeps its alias.
+    if (name === 'product') return { key: 'product', dict: 'all_products', route: 'products' }
     if (name === 'page' || name.startsWith('page.')) {
       return { key: 'page', dict: 'pages', route: 'pages', suffix: name === 'page' ? '' : name.slice('page.'.length) }
     }
@@ -280,6 +305,28 @@ export default class ShopifyEngine extends LiquidEngine {
       return { key: 'article', dict: 'articles', route: `blogs/${blog}` }
     }
     return null
+  }
+
+  // Shopify computes `recommendations` per product against a live store; fake
+  // the drop from the other mocked products, excluding the page's own product.
+  // ponytail: no relatedness ranking — first 4 other mocks (Dawn's default
+  // products_to_show). Read the section's limit if a theme ever needs more.
+  fakeRecommendations(excludeHandle) {
+    const products = this.mockProducts().filter((p) => p.handle !== excludeHandle).slice(0, 4)
+    return { performed: true, products, products_count: products.length, intent: 'related' }
+  }
+
+  // Every product object in the mock data, deduped by handle — source for the
+  // faked `recommendations` drop.
+  mockProducts() {
+    const byHandle = new Map()
+    const add = (p) => { if (p && p.handle && !byHandle.has(p.handle)) byHandle.set(p.handle, p) }
+    if (this.globals.all_products) Object.values(this.globals.all_products).forEach(add)
+    const addProducts = (c) => { if (c && Array.isArray(c.products)) c.products.forEach(add) }
+    addProducts(this.globals.collection)
+    const cols = this.globals.collections
+    if (cols) (Array.isArray(cols) ? Array.from(cols) : Object.values(cols)).forEach(addProducts)
+    return [...byHandle.values()]
   }
 
   // Every product handle referenced by mock data: the `product` global, the
