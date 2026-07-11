@@ -261,6 +261,26 @@ describe('rendering', () => {
     expect(filled).toContain('count=2')
   })
 
+  it('computes link.current/child_active against the rendered page url', async() => {
+    write('templates/collection.liquid', '{% for l in linklists.main.links %}{{ l.title }}:{{ l.current }}:{{ l.child_active }};{% endfor %}')
+    const engine = makeEngine()
+    engine.setGlobal('collection', { handle: 'bags' })
+    engine.setGlobal('linklists', {
+      main: {
+        handle: 'main',
+        links: [
+          { title: 'Bags', url: '/collections/bags', links: [{ title: 'Shop all', url: '/collections/bags', links: [] }] },
+          { title: 'Shoes', url: '/collections/shoes', links: [] }
+        ]
+      }
+    })
+    // collection template renders at /collections/bags → Bags is current, and
+    // its "Shop all" child makes it child_active too
+    const html = await engine.render(path.join(themeDir, 'templates', 'collection.liquid'), { page: {} })
+    expect(html).toContain('Bags:true:true;')
+    expect(html).toContain('Shoes:false:false;')
+  })
+
   it('scopes the customer mock to customers/* templates (storefront renders as guest)', async() => {
     write('templates/customer-probe.liquid', '{% if customer %}IN:{{ customer.first_name }}{% else %}GUEST{% endif %}')
     write('templates/customers/account-probe.liquid', '{% if customer %}IN:{{ customer.first_name }}{% else %}GUEST{% endif %}')

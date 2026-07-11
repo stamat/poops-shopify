@@ -2,6 +2,7 @@
 
 > [!WARNING]
 > AI slop! This is just a PoC and is still in progress!
+> TBH, I have no idea why I was so eager to build this in the first place... maybe because I always hated theme sync for classic themes... maybe because I could... Guess I will never know now...
 
 Shopify Liquid engine for [poops](https://github.com/stamat/poops). Develop Shopify themes locally — instant builds, livereload, mock data, no store, no `shopify theme dev` round-trips — then push the theme directory to Shopify as-is.
 

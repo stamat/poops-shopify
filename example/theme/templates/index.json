@@ -7,13 +7,13 @@
           "type": "heading",
           "settings": {
             "heading": "Industrial design meets fashion.",
-            "heading_size": "h1"
+            "heading_size": "h0"
           }
         },
         "text": {
           "type": "text",
           "settings": {
-            "text": "<p>Atypical leather goods</p>",
+            "text": "Atypical leather goods",
             "text_style": "body"
           }
         },
@@ -22,7 +22,7 @@
           "settings": {
             "button_label_1": "Shop now",
             "button_link_1": "shopify://collections/all",
-            "button_style_secondary_1": false,
+            "button_style_secondary_1": true,
             "button_label_2": "",
             "button_link_2": "",
             "button_style_secondary_2": false
@@ -47,12 +47,12 @@
         },
         "image_overlay_opacity": 40,
         "image_height": "large",
-        "image_behavior": "none",
+        "image_behavior": "fixed",
         "desktop_content_position": "bottom-center",
         "desktop_content_alignment": "center",
         "show_text_box": false,
         "color_scheme": "scheme-3",
-        "stack_images_on_mobile": true,
+        "stack_images_on_mobile": false,
         "mobile_content_alignment": "center",
         "show_text_below": false
       }
@@ -81,7 +81,7 @@
         "color_scheme": "scheme-1",
         "full_width": true,
         "padding_top": 40,
-        "padding_bottom": 52
+        "padding_bottom": 0
       }
     },
     "featured_collection": {

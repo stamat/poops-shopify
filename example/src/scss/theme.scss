@@ -1,26 +1,9 @@
-body {
-  font-family: system-ui, sans-serif;
-  margin: 0;
-}
+// Example custom stylesheet — compiled by poops into theme/assets/theme.css
+// and loaded after base.css from layout/theme.liquid.
 
-.site-header,
-.site-footer {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  padding: 1rem 2rem;
-  background: #222;
-  color: #fff;
-
-  a {
-    color: #fff;
-  }
-}
-
-.product-card {
-  max-width: 16rem;
-
-  &__image {
-    max-width: 100%;
-  }
+// The Dawn demo store's footer carries the legacy `color-background-1` scheme
+// class, which Dawn's `.footer:not(.color-scheme-1)` rule exempts from the top
+// border — so the demo footer renders without one. Match it.
+.footer {
+  border-top: none !important;
 }

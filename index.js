@@ -5,7 +5,7 @@ import { parseFrontMatter } from 'poops/lib/markup/helpers.js'
 import registerShopifyFilters from './lib/filters.js'
 import registerShopifyTags from './lib/tags.js'
 import { extractSchema, stripSchema, settingDefaults, loadThemeSettings, loadLocale, readJson } from './lib/theme.js'
-import { colorizeSettings } from './lib/shopify-helpers.js'
+import { colorizeSettings, handleize } from './lib/shopify-helpers.js'
 
 const DEFAULT_ROUTES = {
   root_url: '/',
@@ -155,6 +155,16 @@ export default class ShopifyEngine extends LiquidEngine {
       ctx._extraGlobals = { ...(ctx._extraGlobals || {}), customer: null }
     }
 
+    // Shopify computes link.current/active/child_active per requested URL —
+    // themes underline the current page in the nav. Rebuild linklists with
+    // those flags for this page's route.
+    const route = name === 'index' ? '/' : this.previewRoute(name) && `/${this.previewRoute(name)}`
+    const linklists = this.linklistsFor(route)
+    if (linklists) {
+      ctx.linklists = linklists
+      ctx._extraGlobals = { ...(ctx._extraGlobals || {}), linklists }
+    }
+
     let content
     let layoutSpec
     let tpl
@@ -219,13 +229,45 @@ export default class ShopifyEngine extends LiquidEngine {
     for (const res of resources) {
       if (!res || !res.handle) continue
       if (cfg.suffix !== undefined && (res.template_suffix || '') !== cfg.suffix) continue
-      const rctx = { ...ctx, [cfg.key]: res, relativePathPrefix: prefix, _extraGlobals: { ...(ctx._extraGlobals || {}), [cfg.key]: res } }
+      const linklists = this.linklistsFor(res.url)
+      const rctx = {
+        ...ctx,
+        [cfg.key]: res,
+        relativePathPrefix: prefix,
+        ...(linklists ? { linklists } : {}),
+        _extraGlobals: { ...(ctx._extraGlobals || {}), [cfg.key]: res, ...(linklists ? { linklists } : {}) }
+      }
       const content = await this.renderSectionList(tpl.sections || {}, tpl.order, rctx)
       const html = await this.wrapInLayout(content, rctx, layoutSpec)
       const dir = path.join(outRoot, res.handle)
       fs.mkdirSync(dir, { recursive: true })
       fs.writeFileSync(path.join(dir, 'index.html'), html)
     }
+  }
+
+  // A copy of the linklists mock with link.current/active/child_active (and a
+  // handle, which Dawn uses for element ids) computed against a page URL —
+  // Shopify derives these per request, so they can't live in the static mock.
+  linklistsFor(currentUrl) {
+    const src = this.globals.linklists
+    if (!src || !currentUrl) return null
+    const mapLinks = (links) => (links || []).map((l) => {
+      const child = mapLinks(l.links)
+      const current = l.url === currentUrl
+      const childActive = child.some((c) => c.current || c.child_active)
+      return {
+        ...l,
+        links: child,
+        handle: l.handle || handleize(l.title || ''),
+        current,
+        active: current,
+        child_active: childActive,
+        child_current: childActive
+      }
+    })
+    const out = {}
+    for (const [k, v] of Object.entries(src)) out[k] = { ...v, links: mapLinks(v.links) }
+    return out
   }
 
   resourceTemplate(name) {
@@ -271,7 +313,7 @@ export default class ShopifyEngine extends LiquidEngine {
     const source = fs.readFileSync(file, 'utf-8')
     const schema = extractSchema(source)
     const settings = colorizeSettings({ ...settingDefaults(schema.settings), ...(data.settings || {}) })
-    this.resolveSettingRefs(schema.settings, settings)
+    this.resolveSettingRefs(schema.settings, settings, context)
     await this.renderSettingLiquid(settings, context)
 
     const blockDefaults = {}
@@ -284,7 +326,7 @@ export default class ShopifyEngine extends LiquidEngine {
         const raw = data.blocks[blockId]
         const settings = colorizeSettings({ ...blockDefaults[raw.type], ...(raw.settings || {}) })
         const blockSchema = (schema.blocks || []).find(b => b.type === raw.type)
-        this.resolveSettingRefs(blockSchema && blockSchema.settings, settings)
+        this.resolveSettingRefs(blockSchema && blockSchema.settings, settings, context)
         await this.renderSettingLiquid(settings, context)
         blocks.push({ id: blockId, type: raw.type, settings, shopify_attributes: '' })
       }
@@ -309,7 +351,7 @@ export default class ShopifyEngine extends LiquidEngine {
   // store). Themes then read section.settings.collection.products etc., so swap
   // the handle for the matching mock global. Only these two types: menus/pages
   // are indexed by handle against their global dicts, so leave those as strings.
-  resolveSettingRefs(schemaSettings, settings) {
+  resolveSettingRefs(schemaSettings, settings, context) {
     const DICT = { collection: 'collections', product: 'all_products' }
     const SINGLE = { collection: 'collection', product: 'product' }
     for (const def of schemaSettings || []) {
@@ -317,10 +359,12 @@ export default class ShopifyEngine extends LiquidEngine {
       // link_list holds a menu handle; swap it for the matching linklists mock,
       // as Shopify auto-resolves link_list settings to the LinkList object. It's a
       // single menu (not a comma list), so handle it before the _list branch below.
+      // Prefer the page-scoped copy (link.current flags) over the raw mock.
       if (def.type === 'link_list') {
         const handle = settings[def.id]
         if (typeof handle === 'string' && handle) {
-          settings[def.id] = (this.globals.linklists || {})[handle] || handle
+          const dict = (context && context.linklists) || this.globals.linklists || {}
+          settings[def.id] = dict[handle] || handle
         }
         continue
       }
