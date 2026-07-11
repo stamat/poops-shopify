@@ -132,7 +132,7 @@ describe('rendering', () => {
     const engine = makeEngine()
     engine.setGlobal('product', { handle: 'sample' })
     engine.setGlobal('all_products', {
-      'sample': { handle: 'sample' },
+      sample: { handle: 'sample' },
       'other-a': { handle: 'other-a' },
       'other-b': { handle: 'other-b' }
     })
@@ -334,6 +334,18 @@ describe('tags', () => {
     expect(html).not.toContain('ERR')
   })
 
+  it('emits {% form %} kwargs as form attributes', async() => {
+    const engine = makeEngine()
+    const html = await engine.renderString(
+      "{% form 'product', product, id: form_id, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' %}x{% endform %}",
+      { product: { id: 1 }, form_id: 'ProductForm-1' }
+    )
+    expect(html).toContain('id="ProductForm-1"')
+    expect(html).toContain('class="form"')
+    expect(html).toContain('novalidate="novalidate"')
+    expect(html).toContain('data-type="add-to-cart-form"')
+  })
+
   it('renders {% paginate %} with a paginate object over all items', async() => {
     const engine = makeEngine()
     const html = await engine.renderString(
@@ -416,7 +428,7 @@ describe('helpers', () => {
 
   it('formatMoney handles placeholder variants', () => {
     expect(formatMoney(199, '${{ amount }}')).toBe('$1.99')
-    expect(formatMoney(150000, '{{ amount_no_decimals }} €')).toBe('1500 €')
+    expect(formatMoney(150000, '{{ amount_no_decimals }} €')).toBe('1,500 €')
   })
 
   it('extractSchema/stripSchema tolerate liquid inside schema strings', () => {

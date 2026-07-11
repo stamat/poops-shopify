@@ -100,6 +100,7 @@ export default class ShopifyEngine extends LiquidEngine {
   // config/ and locales/ show up without a restart. A theme has a handful of
   // pages and these are tiny JSON files — not worth a cache.
   refreshThemeState() {
+    if (this.assetCache) this.assetCache.clear() // watch-mode edits to inlined assets show up next render
     const { settings, sections } = loadThemeSettings(this.themeDir)
     this.setGlobal('settings', settings)
     this.sectionSettingsData = sections
@@ -112,7 +113,8 @@ export default class ShopifyEngine extends LiquidEngine {
     const cols = this.globals.collections
     if (cols && typeof cols === 'object' && !Array.isArray(cols)) {
       const arr = Object.values(cols)
-      for (const [k, v] of Object.entries(cols)) arr[k] = v
+      // skip all-digit handles — they'd clobber the array's own indices
+      for (const [k, v] of Object.entries(cols)) { if (!/^\d+$/.test(k)) arr[k] = v }
       this.setGlobal('collections', arr)
     }
 
@@ -168,7 +170,8 @@ export default class ShopifyEngine extends LiquidEngine {
     // Shopify computes link.current/active/child_active per requested URL —
     // themes underline the current page in the nav. Rebuild linklists with
     // those flags for this page's route.
-    const route = name === 'index' ? '/' : this.previewRoute(name) && `/${this.previewRoute(name)}`
+    const preview = this.previewRoute(name)
+    const route = name === 'index' ? '/' : preview && `/${preview}`
     const linklists = this.linklistsFor(route)
     if (linklists) {
       ctx.linklists = linklists
@@ -371,6 +374,7 @@ export default class ShopifyEngine extends LiquidEngine {
     if (data.blocks) {
       for (const blockId of data.block_order || Object.keys(data.blocks)) {
         const raw = data.blocks[blockId]
+        if (!raw) continue // stale block_order id — skip rather than kill the build
         const settings = colorizeSettings({ ...blockDefaults[raw.type], ...(raw.settings || {}) })
         const blockSchema = (schema.blocks || []).find(b => b.type === raw.type)
         this.resolveSettingRefs(blockSchema && blockSchema.settings, settings, context)

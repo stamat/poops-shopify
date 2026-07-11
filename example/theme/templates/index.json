@@ -159,9 +159,9 @@
         },
         "cover_image": {
           "src": "https://theme-dawn-demo.myshopify.com/cdn/shop/files/Mlouye_video.png?v=1637108281",
-          "width": 1920,
-          "height": 1080,
-          "aspect_ratio": 1.7777,
+          "width": 3840,
+          "height": 1673,
+          "aspect_ratio": 2.2952,
           "alt": "Mlouye"
         },
         "description": "Mlouye brand film",
