@@ -1,0 +1,80 @@
+{
+  "id": 9201,
+  "name": "#1001",
+  "order_number": 1001,
+  "customer_url": "/account/orders/1001",
+  "created_at": "2026-06-01T10:00:00-04:00",
+  "cancelled": false,
+  "cancelled_at": null,
+  "cancel_reason_label": null,
+  "financial_status": "paid",
+  "financial_status_label": "Paid",
+  "fulfillment_status": "fulfilled",
+  "fulfillment_status_label": "Fulfilled",
+  "line_items_subtotal_price": 46500,
+  "subtotal_price": 46500,
+  "total_discounts": 0,
+  "total_duties": null,
+  "total_refunded_amount": 0,
+  "total_net_amount": 47000,
+  "total_price": 47000,
+  "tax_price": 0,
+  "tax_lines": [],
+  "cart_level_discount_applications": [],
+  "shipping_methods": [
+    { "title": "Standard Shipping", "price": 500 }
+  ],
+  "shipping_price": 500,
+  "shipping_address": {
+    "first_name": "Jane",
+    "last_name": "Doe",
+    "company": "",
+    "address1": "3 Industrial Pkwy S",
+    "address2": "",
+    "city": "Aurora",
+    "province": "Ontario",
+    "country": "Canada",
+    "zip": "L4G 3V9",
+    "phone": "+1 123-456-7891",
+    "formatted": ["Jane Doe", "3 Industrial Pkwy S", "Aurora Ontario L4G 3V9", "Canada"]
+  },
+  "billing_address": {
+    "first_name": "Jane",
+    "last_name": "Doe",
+    "company": "",
+    "address1": "3 Industrial Pkwy S",
+    "address2": "",
+    "city": "Aurora",
+    "province": "Ontario",
+    "country": "Canada",
+    "zip": "L4G 3V9",
+    "phone": "+1 123-456-7891",
+    "formatted": ["Jane Doe", "3 Industrial Pkwy S", "Aurora Ontario L4G 3V9", "Canada"]
+  },
+  "line_items": [
+    {
+      "key": "9301:1",
+      "title": "Puff - Olive Leaf",
+      "quantity": 1,
+      "sku": "",
+      "url": "/products/puff-olive-leaf",
+      "final_price": 46500,
+      "final_line_price": 46500,
+      "original_price": 46500,
+      "original_line_price": 46500,
+      "unit_price": null,
+      "unit_price_measurement": null,
+      "properties": [],
+      "line_level_discount_allocations": [],
+      "selling_plan_allocation": null,
+      "fulfillment": {
+        "created_at": "2026-06-02T10:00:00-04:00",
+        "tracking_company": "UPS",
+        "tracking_number": "1Z999AA10123456784",
+        "tracking_url": "https://www.ups.com/track?tracknum=1Z999AA10123456784"
+      },
+      "variant": { "title": "Olive Leaf" },
+      "product": { "has_only_default_variant": false }
+    }
+  ]
+}

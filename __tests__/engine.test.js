@@ -201,6 +201,76 @@ describe('rendering', () => {
     expect(engine.replaceOutExtensions('/x/templates/cart.liquid')).toBe('/x/cart/index.html')
     expect(engine.replaceOutExtensions('/x/templates/collection.json')).toBe('/x/collections/all/index.html')
   })
+
+  it('routes customers/* templates at Shopify account routes', () => {
+    const engine = makeEngine()
+    expect(engine.replaceOutExtensions('/x/templates/customers/login.json')).toBe('/x/account/login/index.html')
+    expect(engine.replaceOutExtensions('/x/templates/customers/account.json')).toBe('/x/account/index.html')
+    expect(engine.replaceOutExtensions('/x/templates/customers/order.json')).toBe('/x/account/orders/1001/index.html')
+  })
+
+  it('routes the article template and emits a page per articles-mock entry', async() => {
+    write('templates/article.json', JSON.stringify({ sections: { main: { type: 'hero' } }, order: ['main'] }))
+    write('sections/article-title.liquid', '<h1>{{ article.title }}</h1>{% schema %}{ "name": "A" }{% endschema %}')
+    write('templates/article2.json', JSON.stringify({ sections: { main: { type: 'article-title' } }, order: ['main'] }))
+    const engine = makeEngine()
+    engine.setGlobal('blog', { handle: 'news' })
+    engine.setGlobal('article', { handle: 'first-post', title: 'First post' })
+    engine.setGlobal('articles', {
+      'first-post': { handle: 'first-post', title: 'First post' },
+      'second-post': { handle: 'second-post', title: 'Second post' }
+    })
+    expect(engine.replaceOutExtensions('/x/templates/article.json')).toBe('/x/blogs/news/first-post/index.html')
+
+    const outDir = path.join(themeDir, 'article-out')
+    engine.markupOut = outDir
+    fs.renameSync(path.join(themeDir, 'templates', 'article2.json'), path.join(themeDir, 'templates', 'article.json'))
+    await engine.render(path.join(themeDir, 'templates', 'article.json'), { page: {} })
+    const page = path.join(outDir, 'blogs', 'news', 'second-post', 'index.html')
+    expect(fs.existsSync(page)).toBe(true)
+    expect(fs.readFileSync(page, 'utf-8')).toContain('<h1>Second post</h1>')
+  })
+
+  it('resolves shopify:// deep links in setting values', async() => {
+    const engine = makeEngine()
+    const html = await engine.renderSection('hero', {
+      settings: { heading: 'shopify://collections/all' }
+    }, {})
+    expect(html).toContain('<h1>/collections/all</h1>')
+  })
+
+  it('exposes the collections mock dict as an iterable array with handle lookup', async() => {
+    write('templates/cols-probe.liquid', "{% for c in collections %}[{{ c.title }}]{% endfor %}|{{ collections['bags'].title }}")
+    const engine = makeEngine()
+    engine.setGlobal('collections', { bags: { handle: 'bags', title: 'Bags' }, shoes: { handle: 'shoes', title: 'Shoes' } })
+    const html = await engine.render(path.join(themeDir, 'templates', 'cols-probe.liquid'), { page: {} })
+    expect(html).toContain('[Bags][Shoes]|Bags')
+  })
+
+  it('treats an itemless cart as == empty while its properties still resolve', async() => {
+    write('templates/cart-probe.liquid', '{% if cart == empty %}EMPTY{% endif %}count={{ cart.item_count }}')
+    const engine = makeEngine()
+    engine.setGlobal('cart', { item_count: 0, items: [], total_price: 0 })
+    const html = await engine.render(path.join(themeDir, 'templates', 'cart-probe.liquid'), { page: {} })
+    expect(html).toContain('EMPTY')
+    expect(html).toContain('count=0')
+
+    engine.setGlobal('cart', { item_count: 2, items: [{}, {}], total_price: 100 })
+    const filled = await engine.render(path.join(themeDir, 'templates', 'cart-probe.liquid'), { page: {} })
+    expect(filled).not.toContain('EMPTY')
+    expect(filled).toContain('count=2')
+  })
+
+  it('scopes the customer mock to customers/* templates (storefront renders as guest)', async() => {
+    write('templates/customer-probe.liquid', '{% if customer %}IN:{{ customer.first_name }}{% else %}GUEST{% endif %}')
+    write('templates/customers/account-probe.liquid', '{% if customer %}IN:{{ customer.first_name }}{% else %}GUEST{% endif %}')
+    const engine = makeEngine()
+    engine.setGlobal('customer', { first_name: 'Jane' })
+    const storefront = await engine.render(path.join(themeDir, 'templates', 'customer-probe.liquid'), { page: {} })
+    expect(storefront).toContain('GUEST')
+    const account = await engine.render(path.join(themeDir, 'templates', 'customers', 'account-probe.liquid'), { page: {} })
+    expect(account).toContain('IN:Jane')
+  })
 })
 
 describe('tags', () => {

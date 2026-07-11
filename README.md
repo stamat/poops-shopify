@@ -68,7 +68,7 @@ shopify theme check --path theme    # lint with Shopify's own checker
 shopify theme push --path theme     # deploy — the theme dir is the artifact
 ```
 
-Each file in `templates/` becomes a preview page in `dist/templates/`, rendered with your mock data.
+Each file in `templates/` becomes a preview page in `dist/`, rendered with your mock data at its Shopify route (`templates/product.json` → `dist/products/<handle>/index.html`).
 
 ## Mock data
 
@@ -79,10 +79,13 @@ Every `.json`/`.yml` file in `mocks/` becomes a Liquid global named after the fi
 - **Theme structure** — `layout/theme.liquid` wrapping via `content_for_layout`, `content_for_header` (injects livereload), snippets via `{% render %}`
 - **Sections** — `{% section %}`, `{% sections %}` (section groups), `{% schema %}` setting/block defaults, `settings_data.json` overrides, `shopify-section-*` wrapper divs
 - **JSON templates** — OS 2.0 `templates/*.json` with section order, per-section settings, blocks and `block_order`
-- **Settings** — `settings_schema.json` defaults + `settings_data.json` (including string presets) as the `settings` global
+- **Settings** — `settings_schema.json` defaults + `settings_data.json` (including string presets) as the `settings` global; `shopify://` deep links resolve to storefront paths; collection/product/menu picker settings resolve handles to mock objects
 - **Locales** — `{{ 'key.path' | t }}` with interpolation and one/other pluralization from `locales/*.default.json`
 - **Tags** — `style`, `stylesheet`, `javascript`, `form`, `paginate`
 - **Filters** — `asset_url`, `stylesheet_tag`, `script_tag`, `image_url`/`img_url`, `image_tag`, `money`, `money_with_currency`, `money_without_trailing_zeros`, `t`, `handleize`/`handle`, `json`, `default_pagination`, plus everything liquidjs ships (`default`, `date`, …)
+- **Shopify routes** — templates land at their storefront paths: `products/<handle>/`, `collections/<handle>/`, `blogs/<blog>/<article>/`, `pages/<handle>/`, `cart/`, `search/`, and `customers/*` at `account/…`
+- **Mock resource pages** — the `collections`, `pages` and `articles` mock dicts each emit one rendered page per entry (pages pick their template by `template_suffix`); every product handle referenced in mocks gets a copy of the sample product page, so no product card 404s
+- **Session semantics** — `customer` is only in scope on `customers/*` templates (the storefront renders logged out, like Shopify); a cart with no items compares `== empty` the way Shopify's cart drop does
 
 ## What's not
 

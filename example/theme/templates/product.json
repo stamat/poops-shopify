@@ -3,13 +3,6 @@
     "main": {
       "type": "main-product",
       "blocks": {
-        "vendor": {
-          "type": "text",
-          "settings": {
-            "text": "{{ product.vendor }}",
-            "text_style": "uppercase"
-          }
-        },
         "title": {
           "type": "title"
         },
@@ -36,6 +29,42 @@
         "description": {
           "type": "description"
         },
+        "tab_materials": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Materials",
+            "icon": "none",
+            "content": "<p>w:35 X h:23 cm (14 X 9 in)</p>",
+            "page": ""
+          }
+        },
+        "tab_shipping": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Shipping & Returns",
+            "icon": "none",
+            "content": "<p>Free shipping and returns available on all orders!<br><br>We ship all US domestic orders within <strong>5-10 business days</strong>!</p>",
+            "page": ""
+          }
+        },
+        "tab_dimensions": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Dimensions",
+            "icon": "none",
+            "content": "<p>Hand-crafted from Italian nappa leather. Microsuede interior. Filled with soft padding to keep your laptop protected. Comes with detachable handle/short shoulder strap.</p>",
+            "page": ""
+          }
+        },
+        "tab_care": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Care Instructions",
+            "icon": "none",
+            "content": "<p>Use a soft damp cloth and a drop of mild soap to remove any haze. Air dry.</p>",
+            "page": ""
+          }
+        },
         "share": {
           "type": "share",
           "settings": {
@@ -44,13 +73,16 @@
         }
       },
       "block_order": [
-        "vendor",
         "title",
         "price",
         "variant_picker",
         "quantity_selector",
         "buy_buttons",
         "description",
+        "tab_materials",
+        "tab_shipping",
+        "tab_dimensions",
+        "tab_care",
         "share"
       ],
       "settings": {
@@ -69,11 +101,85 @@
         "padding_bottom": 12
       }
     },
-    "disclosures": {
-      "type": "disclosures",
+    "image-with-text": {
+      "type": "image-with-text",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "A new kind of bag.",
+            "heading_size": "h2"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Unexpected shapes with smart details, functionality, a new luxury feel with a contemporary price point.</p>",
+            "text_style": "body"
+          }
+        }
+      },
+      "block_order": ["heading", "text"],
       "settings": {
+        "image": {
+          "src": "https://theme-dawn-demo.myshopify.com/cdn/shop/files/imgwithtext_1070x_91914dd5-dcb3-4f6b-a829-e6e75fb5813e.png?v=1642553858",
+          "width": 1500,
+          "height": 1500,
+          "aspect_ratio": 1.0,
+          "alt": "A new kind of bag."
+        },
+        "height": "medium",
+        "desktop_image_width": "medium",
+        "layout": "text_first",
+        "image_behavior": "none",
+        "content_layout": "no-overlap",
+        "desktop_content_position": "top",
+        "desktop_content_alignment": "left",
+        "mobile_content_alignment": "left",
+        "section_color_scheme": "scheme-1",
+        "color_scheme": "scheme-2",
         "padding_top": 36,
-        "padding_bottom": 0
+        "padding_bottom": 36
+      }
+    },
+    "multicolumn": {
+      "type": "multicolumn",
+      "blocks": {
+        "column_1": {
+          "type": "column",
+          "settings": {
+            "title": "Free Shipping",
+            "text": "<p>We offer free worldwide express shipping on all orders. You'll receive your order an estimated 1–4 days after shipment.</p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "column_2": {
+          "type": "column",
+          "settings": {
+            "title": "Hassle-Free Exchanges",
+            "text": "<p>Exchanges are free. Try from the comfort of your home. We will collect from your home, work or an alternative address.</p>",
+            "link_label": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": ["column_1", "column_2"],
+      "settings": {
+        "title": "",
+        "heading_size": "h2",
+        "image_width": "full",
+        "image_ratio": "adapt",
+        "button_label": "",
+        "button_link": "",
+        "columns_desktop": 2,
+        "column_alignment": "left",
+        "background_style": "none",
+        "color_scheme": "scheme-1",
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
+        "padding_top": 36,
+        "padding_bottom": 36
       }
     },
     "related-products": {
@@ -97,7 +203,8 @@
   },
   "order": [
     "main",
-    "disclosures",
+    "image-with-text",
+    "multicolumn",
     "related-products"
   ]
 }

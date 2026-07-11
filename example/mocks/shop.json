@@ -1,8 +1,10 @@
 {
-  "name": "Dawn",
+  "name": "theme-dawn-demo",
   "email": "dev@example.com",
   "currency": "USD",
   "money_format": "${{ amount }}",
+  "customer_accounts_enabled": true,
+  "customer_accounts_optional": true,
   "url": "http://localhost:4141",
   "domain": "localhost",
   "enabled_payment_types": ["visa", "master", "american_express", "paypal", "diners_club", "discover"]

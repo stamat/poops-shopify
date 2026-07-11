@@ -1,13 +1,12 @@
 {
-  "item_count": 2,
-  "total_price": 3700,
-  "items": [
-    {
-      "title": "Enamel Mug",
-      "quantity": 2,
-      "price": 1850,
-      "line_price": 3700,
-      "url": "/products/enamel-mug"
-    }
-  ]
+  "item_count": 0,
+  "items": [],
+  "total_price": 0,
+  "original_total_price": 0,
+  "total_discount": 0,
+  "cart_level_discount_applications": [],
+  "empty": true,
+  "requires_shipping": false,
+  "note": null,
+  "currency": "USD"
 }

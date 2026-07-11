@@ -11,12 +11,54 @@
         "child_active": false,
         "levels": 1,
         "links": [
-          { "title": "Shop all", "url": "/collections/bags", "links": [] },
-          { "title": "Tote bags", "url": "/collections/bags", "links": [] },
-          { "title": "Shoulder bags", "url": "/collections/bags", "links": [] },
-          { "title": "Crossbody bags", "url": "/collections/bags", "links": [] },
-          { "title": "Top handle bags", "url": "/collections/bags", "links": [] },
-          { "title": "Mini bags", "url": "/collections/bags", "links": [] }
+          {
+            "title": "Shop all",
+            "url": "/collections/bags",
+            "active": false,
+            "child_active": false,
+            "levels": 0,
+            "links": []
+          },
+          {
+            "title": "Tote bags",
+            "url": "/collections/tote-bags",
+            "active": false,
+            "child_active": false,
+            "levels": 0,
+            "links": []
+          },
+          {
+            "title": "Shoulder bags",
+            "url": "/collections/shoulder-bags",
+            "active": false,
+            "child_active": false,
+            "levels": 0,
+            "links": []
+          },
+          {
+            "title": "Crossbody bags",
+            "url": "/collections/crossbody-bags",
+            "active": false,
+            "child_active": false,
+            "levels": 0,
+            "links": []
+          },
+          {
+            "title": "Top handle bags",
+            "url": "/collections/top-handle-bags",
+            "active": false,
+            "child_active": false,
+            "levels": 0,
+            "links": []
+          },
+          {
+            "title": "Mini bags",
+            "url": "/collections/mini-bags",
+            "active": false,
+            "child_active": false,
+            "levels": 0,
+            "links": []
+          }
         ]
       },
       {
@@ -26,13 +68,35 @@
         "child_active": false,
         "levels": 1,
         "links": [
-          { "title": "Sandals", "url": "/collections/shoes", "links": [] },
-          { "title": "Boots", "url": "/collections/shoes", "links": [] }
+          {
+            "title": "Shop all",
+            "url": "/collections/shoes",
+            "active": false,
+            "child_active": false,
+            "levels": 0,
+            "links": []
+          },
+          {
+            "title": "Sandals",
+            "url": "/collections/sandals",
+            "active": false,
+            "child_active": false,
+            "levels": 0,
+            "links": []
+          },
+          {
+            "title": "Boots",
+            "url": "/collections/boots",
+            "active": false,
+            "child_active": false,
+            "levels": 0,
+            "links": []
+          }
         ]
       },
       {
         "title": "Lookbook",
-        "url": "/pages/lookbook",
+        "url": "/pages/lookbook-summer",
         "active": false,
         "child_active": false,
         "levels": 0,
@@ -45,9 +109,30 @@
     "handle": "footer",
     "levels": 1,
     "links": [
-      { "title": "Bags", "url": "/collections/bags", "links": [] },
-      { "title": "Shoes", "url": "/collections/shoes", "links": [] },
-      { "title": "Lookbook", "url": "/pages/lookbook", "links": [] }
+      {
+        "title": "Bags",
+        "url": "/collections/bags",
+        "active": false,
+        "child_active": false,
+        "levels": 0,
+        "links": []
+      },
+      {
+        "title": "Shoes",
+        "url": "/collections/shoes",
+        "active": false,
+        "child_active": false,
+        "levels": 0,
+        "links": []
+      },
+      {
+        "title": "Lookbook",
+        "url": "/pages/lookbook",
+        "active": false,
+        "child_active": false,
+        "levels": 0,
+        "links": []
+      }
     ]
   },
   "info": {
@@ -55,10 +140,38 @@
     "handle": "info",
     "levels": 1,
     "links": [
-      { "title": "About", "url": "/pages/about", "links": [] },
-      { "title": "Contact us", "url": "/pages/contact", "links": [] },
-      { "title": "Shipping policy", "url": "/policies/shipping-policy", "links": [] },
-      { "title": "Blog", "url": "/blogs/news", "links": [] }
+      {
+        "title": "About",
+        "url": "/pages/about",
+        "active": false,
+        "child_active": false,
+        "levels": 0,
+        "links": []
+      },
+      {
+        "title": "Contact us",
+        "url": "/pages/contact-us",
+        "active": false,
+        "child_active": false,
+        "levels": 0,
+        "links": []
+      },
+      {
+        "title": "Shipping policy",
+        "url": "/pages/shipping",
+        "active": false,
+        "child_active": false,
+        "levels": 0,
+        "links": []
+      },
+      {
+        "title": "Blog",
+        "url": "/blogs/news",
+        "active": false,
+        "child_active": false,
+        "levels": 0,
+        "links": []
+      }
     ]
   }
 }

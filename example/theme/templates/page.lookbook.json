@@ -1,0 +1,265 @@
+{
+  "sections": {
+    "collage": {
+      "type": "collage",
+      "blocks": {
+        "image-1": {
+          "type": "image",
+          "settings": {
+            "image": {
+              "src": "https://theme-dawn-demo.myshopify.com/cdn/shop/files/beige_1100x_d4e0c67c-45cd-4f0f-903f-74d6dd8467fd.jpg?v=1642000987&width=3200",
+              "width": 3200,
+              "height": 3200,
+              "aspect_ratio": 1.0,
+              "alt": "A woman wearing a beige cropped top models a beige handbag."
+            }
+          }
+        },
+        "image-2": {
+          "type": "image",
+          "settings": {
+            "image": {
+              "src": "https://theme-dawn-demo.myshopify.com/cdn/shop/files/mlouye-helix-sand-banner-mobile-l1_720x_3ecd24b4-b415-4297-a717-dbc969b84f50.jpg?v=1642000987&width=3200",
+              "width": 3200,
+              "height": 4693,
+              "aspect_ratio": 0.682,
+              "alt": "A light brown bag is displayed on a color-matched pedestal."
+            }
+          }
+        }
+      },
+      "block_order": [
+        "image-1",
+        "image-2"
+      ],
+      "settings": {
+        "heading": "Summer inspiration",
+        "heading_size": "h2",
+        "desktop_layout": "left",
+        "mobile_layout": "collage",
+        "card_styles": "none",
+        "color_scheme": "scheme-1",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "collage-2": {
+      "type": "collage",
+      "blocks": {
+        "image-1": {
+          "type": "image",
+          "settings": {
+            "image": {
+              "src": "https://theme-dawn-demo.myshopify.com/cdn/shop/files/67708907_901020666948593_6980208638084257089_n_990x_b7a9dd6a-6429-4c75-a26a-5c7a43504f5c.jpg?v=1642000987&width=3200",
+              "width": 3200,
+              "height": 3556,
+              "aspect_ratio": 0.9,
+              "alt": "A woman models a black and blue shoulder bag."
+            }
+          }
+        },
+        "image-2": {
+          "type": "image",
+          "settings": {
+            "image": {
+              "src": "https://theme-dawn-demo.myshopify.com/cdn/shop/files/Helix-multicolor_1100x_b39ddcef-cbba-43dc-9899-b21201b0d7a9.jpg?v=1642000987&width=3000",
+              "width": 3000,
+              "height": 3000,
+              "aspect_ratio": 1.0,
+              "alt": "A woman holds six of the same handbag in a variety of colors."
+            }
+          }
+        }
+      },
+      "block_order": [
+        "image-1",
+        "image-2"
+      ],
+      "settings": {
+        "heading": "",
+        "heading_size": "h2",
+        "desktop_layout": "left",
+        "mobile_layout": "collage",
+        "card_styles": "none",
+        "color_scheme": "scheme-1",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "collage-3": {
+      "type": "collage",
+      "blocks": {
+        "image-1": {
+          "type": "image",
+          "settings": {
+            "image": {
+              "src": "https://theme-dawn-demo.myshopify.com/cdn/shop/files/fence_990x_0b9bb165-c606-4ade-916d-11d2ad41ab46.jpg?v=1642000987&width=3200",
+              "width": 3200,
+              "height": 3197,
+              "aspect_ratio": 1.001,
+              "alt": "Several handbags hang against a cream colored outdoor wall."
+            }
+          }
+        },
+        "image-2": {
+          "type": "image",
+          "settings": {
+            "image": {
+              "src": "https://theme-dawn-demo.myshopify.com/cdn/shop/files/17265992_273568689752120_565474247435091968_n_990x_2d589feb-4427-4ba3-84ed-8091a3501cd1.jpg?v=1642000987&width=3200",
+              "width": 3200,
+              "height": 3588,
+              "aspect_ratio": 0.892,
+              "alt": "A top-down view of a black and white handbag and a woman's feet in pointed black shoes."
+            }
+          }
+        },
+        "image-3": {
+          "type": "image",
+          "settings": {
+            "image": {
+              "src": "https://theme-dawn-demo.myshopify.com/cdn/shop/files/15803153_1119335364831494_1136873067247566848_n_990x_8a61e648-8aa6-464e-9347-e6a30633405d.jpg?v=1642000987&width=3000",
+              "width": 3000,
+              "height": 3000,
+              "aspect_ratio": 1.0,
+              "alt": "A top-down view of an orange handbag and a woman's feet wearing pink shoes."
+            }
+          }
+        }
+      },
+      "block_order": [
+        "image-1",
+        "image-2",
+        "image-3"
+      ],
+      "settings": {
+        "heading": "",
+        "heading_size": "h2",
+        "desktop_layout": "left",
+        "mobile_layout": "collage",
+        "card_styles": "none",
+        "color_scheme": "scheme-1",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "collage-4": {
+      "type": "collage",
+      "blocks": {
+        "image-1": {
+          "type": "image",
+          "settings": {
+            "image": {
+              "src": "https://theme-dawn-demo.myshopify.com/cdn/shop/files/23667958_1995292917378769_1214838960031793152_n_720x_50555b44-b16a-485f-a92f-b9beb0dd9971.jpg?v=1642000988&width=3200",
+              "width": 3200,
+              "height": 4000,
+              "aspect_ratio": 0.8,
+              "alt": "A woman wearing bright orange socks and gloves holds three handbags in different colors."
+            }
+          }
+        },
+        "image-2": {
+          "type": "image",
+          "settings": {
+            "image": {
+              "src": "https://theme-dawn-demo.myshopify.com/cdn/shop/files/sera-tote-new-de-ban2_1100x_6a3da929-e585-4607-b4a3-4af6e3e1a68b.jpg?v=1642001275&width=3200",
+              "width": 3200,
+              "height": 3200,
+              "aspect_ratio": 1.0,
+              "alt": "A woman models a blue handbag while wearing a fuzzy textured pale blue outfit."
+            }
+          }
+        }
+      },
+      "block_order": [
+        "image-1",
+        "image-2"
+      ],
+      "settings": {
+        "heading": "",
+        "heading_size": "h2",
+        "desktop_layout": "left",
+        "mobile_layout": "collage",
+        "card_styles": "none",
+        "color_scheme": "scheme-1",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "collage-5": {
+      "type": "collage",
+      "blocks": {
+        "image-1": {
+          "type": "image",
+          "settings": {
+            "image": {
+              "src": "https://theme-dawn-demo.myshopify.com/cdn/shop/files/pink-cropped_1500x_262de62e-3c12-4e92-a5b6-8035d622e2b2.jpg?v=1642000987&width=3200",
+              "width": 3200,
+              "height": 3200,
+              "aspect_ratio": 1.0,
+              "alt": "A pink handbag is displayed, with a woman in the background placing grapefruit slices playfully over her eyes."
+            }
+          }
+        },
+        "image-2": {
+          "type": "image",
+          "settings": {
+            "image": {
+              "src": "https://theme-dawn-demo.myshopify.com/cdn/shop/files/59621535_133816347799668_5448715094877713107_n_990x_32ac2a95-335f-44ef-bc38-70003a892ad6.jpg?v=1642000987&width=3200",
+              "width": 3200,
+              "height": 4002,
+              "aspect_ratio": 0.8,
+              "alt": "A model holds a mint green pleated lantern bag while wearing a color matched suit."
+            }
+          }
+        }
+      },
+      "block_order": [
+        "image-1",
+        "image-2"
+      ],
+      "settings": {
+        "heading": "",
+        "heading_size": "h2",
+        "desktop_layout": "left",
+        "mobile_layout": "collage",
+        "card_styles": "none",
+        "color_scheme": "scheme-1",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "featured-collection": {
+      "type": "featured-collection",
+      "settings": {
+        "title": "Featured",
+        "heading_size": "h2",
+        "collection": "featured-in-lookbook",
+        "products_to_show": 8,
+        "columns_desktop": 4,
+        "full_width": false,
+        "show_view_all": false,
+        "view_all_style": "solid",
+        "enable_desktop_slider": false,
+        "color_scheme": "scheme-1",
+        "image_ratio": "adapt",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "quick_add": "none",
+        "columns_mobile": "2",
+        "swipe_on_mobile": false,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    }
+  },
+  "order": [
+    "collage",
+    "collage-2",
+    "collage-3",
+    "collage-4",
+    "collage-5",
+    "featured-collection"
+  ]
+}

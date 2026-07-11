@@ -1,0 +1,11 @@
+{
+  "code": "ABCD EFGH IJKL MNOP",
+  "qr_identifier": "mock-qr-identifier",
+  "balance": 5000,
+  "initial_value": 5000,
+  "enabled": true,
+  "expired": false,
+  "expires_on": null,
+  "pass_url": null,
+  "currency": "USD"
+}

@@ -52,12 +52,18 @@ export default class ShopifyEngine extends LiquidEngine {
     const flattened = outputPath.replace(`${path.sep}templates${path.sep}`, path.sep)
     const name = path.basename(flattened).replace(/\.(liquid|json)$/, '')
     const route = this.previewRoute(name)
-    if (route) return path.join(path.dirname(flattened), ...route.split('/'), 'index.html')
+    if (route) {
+      // customers/* templates route from the site root (/account/login), not
+      // under a customers/ path segment — drop the source dir from the output
+      let dir = path.dirname(flattened)
+      if (path.basename(dir) === 'customers') dir = path.dirname(dir)
+      return path.join(dir, ...route.split('/'), 'index.html')
+    }
     return flattened.replace(/\.(liquid|json)$/, '.html')
   }
 
-  // ponytail: covers the templates the mocks can feed; article/customers/etc.
-  // fall back to flat <name>.html — add cases here when their mocks exist.
+  // ponytail: covers the templates the mocks can feed; anything unlisted
+  // falls back to flat <name>.html — add cases here when their mocks exist.
   previewRoute(name) {
     const handle = (key) => this.globals[key] && this.globals[key].handle
     switch (name) {
@@ -66,6 +72,15 @@ export default class ShopifyEngine extends LiquidEngine {
       case 'cart': return 'cart'
       case 'search': return 'search'
       case 'blog': return `blogs/${handle('blog') || 'news'}`
+      case 'article': return `blogs/${handle('blog') || 'news'}/${handle('article') || 'article'}`
+      // customers/* templates at their Shopify account routes
+      case 'account': return 'account'
+      case 'login': return 'account/login'
+      case 'register': return 'account/register'
+      case 'addresses': return 'account/addresses'
+      case 'order': return 'account/orders/1001'
+      case 'activate_account': return 'account/activate'
+      case 'reset_password': return 'account/reset'
       default: return null
     }
   }
@@ -89,6 +104,28 @@ export default class ShopifyEngine extends LiquidEngine {
     this.setGlobal('settings', settings)
     this.sectionSettingsData = sections
     this.locale = loadLocale(this.themeDir)
+
+    // Themes both iterate `collections` (main-list-collections) and index it by
+    // handle (collections['bags']). The mock is a handle-keyed dict, which liquidjs
+    // can't iterate as collection objects — swap it for an array carrying the
+    // handles as extra properties so both access patterns work.
+    const cols = this.globals.collections
+    if (cols && typeof cols === 'object' && !Array.isArray(cols)) {
+      const arr = Object.values(cols)
+      for (const [k, v] of Object.entries(cols)) arr[k] = v
+      this.setGlobal('collections', arr)
+    }
+
+    // Shopify's cart drop compares equal to `empty` when it holds no items —
+    // Dawn gates the header count bubble on {% if cart != empty %}. liquidjs
+    // decides emptiness by Object.keys().length, so make an itemless cart's
+    // properties non-enumerable: lookups still resolve, `cart == empty` is true.
+    const cart = this.globals.cart
+    if (cart && typeof cart === 'object' && !cart.item_count && Object.keys(cart).length) {
+      const hidden = {}
+      for (const [k, v] of Object.entries(cart)) Object.defineProperty(hidden, k, { value: v, enumerable: false })
+      this.setGlobal('cart', hidden)
+    }
   }
 
   // poops passes relativePathPrefix (../../ for nested pages) in the render data,
@@ -109,6 +146,14 @@ export default class ShopifyEngine extends LiquidEngine {
 
     const name = path.basename(templateName).replace(/\.(liquid|json)$/, '')
     const ctx = { ...context, template: { name, directory: 'templates', suffix: '' } }
+
+    // Shopify only exposes `customer` on logged-in account pages — the public
+    // storefront renders as a guest (header "Log in" link, cart sign-in prompt).
+    // Scope the customer mock to customers/* templates to match.
+    if (this.globals.customer && !/[\\/]customers[\\/]/.test(templateName)) {
+      ctx.customer = null
+      ctx._extraGlobals = { ...(ctx._extraGlobals || {}), customer: null }
+    }
 
     let content
     let layoutSpec
@@ -168,10 +213,13 @@ export default class ShopifyEngine extends LiquidEngine {
     // handle dir — so asset_url must walk back that many levels. ctx.relativePathPrefix
     // is for the canonical page's depth (flat page.html for pages), not this one.
     const prefix = '../'.repeat(cfg.route.split('/').length + 1)
-    for (const res of Object.values(dict)) {
+    // dict may be the hybrid collections array (handle props duplicate the
+    // indexed entries) — Array.from takes only the indexed elements
+    const resources = Array.isArray(dict) ? Array.from(dict) : Object.values(dict)
+    for (const res of resources) {
       if (!res || !res.handle) continue
       if (cfg.suffix !== undefined && (res.template_suffix || '') !== cfg.suffix) continue
-      const rctx = { ...ctx, [cfg.key]: res, relativePathPrefix: prefix, _extraGlobals: { [cfg.key]: res } }
+      const rctx = { ...ctx, [cfg.key]: res, relativePathPrefix: prefix, _extraGlobals: { ...(ctx._extraGlobals || {}), [cfg.key]: res } }
       const content = await this.renderSectionList(tpl.sections || {}, tpl.order, rctx)
       const html = await this.wrapInLayout(content, rctx, layoutSpec)
       const dir = path.join(outRoot, res.handle)
@@ -185,6 +233,10 @@ export default class ShopifyEngine extends LiquidEngine {
     if (name === 'page' || name.startsWith('page.')) {
       return { key: 'page', dict: 'pages', route: 'pages', suffix: name === 'page' ? '' : name.slice('page.'.length) }
     }
+    if (name === 'article') {
+      const blog = (this.globals.blog && this.globals.blog.handle) || 'news'
+      return { key: 'article', dict: 'articles', route: `blogs/${blog}` }
+    }
     return null
   }
 
@@ -197,7 +249,8 @@ export default class ShopifyEngine extends LiquidEngine {
     add(this.globals.product)
     if (this.globals.all_products) Object.values(this.globals.all_products).forEach(add)
     addProducts(this.globals.collection)
-    if (this.globals.collections) Object.values(this.globals.collections).forEach(addProducts)
+    const cols = this.globals.collections
+    if (cols) (Array.isArray(cols) ? Array.from(cols) : Object.values(cols)).forEach(addProducts)
     return handles
   }
 
@@ -289,13 +342,18 @@ export default class ShopifyEngine extends LiquidEngine {
   // /html/liquid settings can hold drops like {{ product.vendor }}, and the theme
   // outputs {{ block.settings.text }} expecting the rendered result. liquidjs treats
   // a setting value as an inert string, so evaluate any setting holding Liquid against
-  // the page context here.
+  // the page context here. Also resolve shopify:// deep links (url settings like
+  // shopify://collections/all) to their storefront paths, as Shopify does.
   async renderSettingLiquid(settings, context) {
     const ctx = { ...this.globals, ...context }
     for (const [k, v] of Object.entries(settings)) {
-      if (typeof v === 'string' && (v.includes('{{') || v.includes('{%'))) {
-        settings[k] = await this.engine.parseAndRender(v, ctx, { globals: this.globals })
+      if (typeof v !== 'string') continue
+      let val = v
+      if (val.includes('shopify://')) val = val.replace(/shopify:\/\//g, '/')
+      if (val.includes('{{') || val.includes('{%')) {
+        val = await this.engine.parseAndRender(val, ctx, { globals: this.globals })
       }
+      if (val !== v) settings[k] = val
     }
   }
 
