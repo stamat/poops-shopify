@@ -468,15 +468,26 @@ export default class ShopifyEngine extends LiquidEngine {
     return this.renderSectionList(group.sections || {}, group.order, context, name)
   }
 
+  // Mock data urls and hardcoded theme links are root-relative (/pages/about, /cart),
+  // which 404 when the built site is served under a subpath — GitHub Pages project
+  // sites live at /<repo>/. Rewrite them against the page's relativePathPrefix, the
+  // same prefix asset_url uses, so links resolve both locally (../../) and under a
+  // --base-url (/<repo>/). Protocol-relative urls (//cdn…) are left alone.
+  relativizeUrls(html, context) {
+    const prefix = context && context.relativePathPrefix
+    if (prefix == null) return html
+    return html.replace(/(\s(?:href|action|src)=")\/(?!\/)([^"]*)/g, (_, attr, rest) => `${attr}${(prefix + rest) || './'}`)
+  }
+
   async wrapInLayout(content, context, layoutSpec) {
-    if (layoutSpec === false || layoutSpec === 'none') return content
+    if (layoutSpec === false || layoutSpec === 'none') return this.relativizeUrls(content, context)
     const layoutName = typeof layoutSpec === 'string' ? layoutSpec : 'theme'
     const layoutPath = path.join(this.themeDir, 'layout', `${layoutName}.liquid`)
-    if (!fs.existsSync(layoutPath)) return content
+    if (!fs.existsSync(layoutPath)) return this.relativizeUrls(content, context)
 
     const templateName = (context.template && context.template.name) || ''
     const source = fs.readFileSync(layoutPath, 'utf-8')
-    return this.engine.parseAndRender(source, {
+    const html = await this.engine.parseAndRender(source, {
       ...this.globals,
       ...context,
       content_for_layout: content,
@@ -484,6 +495,7 @@ export default class ShopifyEngine extends LiquidEngine {
       page_title: (context.page && context.page.title) ||
         (templateName.charAt(0).toUpperCase() + templateName.slice(1))
     }, { globals: this.globalsFor(context) })
+    return this.relativizeUrls(html, context)
   }
 
   contentForHeader() {
