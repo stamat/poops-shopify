@@ -1,12 +1,10 @@
 # poops-shopify
 
-> [!WARNING]
-> AI slop! This is just a PoC and is still in progress!
-> TBH, I have no idea why I was so eager to build this in the first place... maybe because I always hated theme sync for classic themes... maybe because I could... Guess I will never know now...
-
 Shopify Liquid engine for [poops](https://github.com/stamat/poops). Develop Shopify themes locally — instant builds, livereload, mock data, no store, no `shopify theme dev` round-trips — then push the theme directory to Shopify as-is.
 
 The trick: your `theme/` directory **is** a real Shopify theme. poops never compiles your Liquid files into anything Shopify sees — it only renders them locally for preview and compiles your JS/SCSS into `theme/assets/`. Migration is `shopify theme push --path theme`. There is nothing to migrate.
+
+**[Demo ➔](https://stamat.info/poops-shopify)**
 
 ## Setup
 
