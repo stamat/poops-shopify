@@ -28,7 +28,7 @@ jobs:
       - run: npm ci
       - run: npm ci
         working-directory: example
-      - run: npm run build -- --base-url /${{ github.event.repository.name }}
+      - run: npm run build
         working-directory: example
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
