@@ -356,12 +356,29 @@ export default class ShopifyEngine extends LiquidEngine {
     return parts.join('\n')
   }
 
+  // Sections render once per instance per page — read/parse each time and the
+  // fs+parse cost dominates the build. Memoized by mtime so watch edits refresh.
+  parseSection(file) {
+    if (!this.sectionCache) this.sectionCache = new Map()
+    const mtimeMs = fs.statSync(file).mtimeMs
+    const cached = this.sectionCache.get(file)
+    if (cached && cached.mtimeMs === mtimeMs) return cached
+
+    const source = fs.readFileSync(file, 'utf-8')
+    const entry = {
+      mtimeMs,
+      schema: extractSchema(source),
+      templates: this.engine.parse(stripSchema(source), file)
+    }
+    this.sectionCache.set(file, entry)
+    return entry
+  }
+
   async renderSection(type, data = {}, context = {}, groupName) {
     const file = path.join(this.themeDir, 'sections', `${type}.liquid`)
     if (!fs.existsSync(file)) return `<!-- poops-shopify: section '${type}' not found -->`
 
-    const source = fs.readFileSync(file, 'utf-8')
-    const schema = extractSchema(source)
+    const { schema, templates } = this.parseSection(file)
     const settings = colorizeSettings({ ...settingDefaults(schema.settings), ...(data.settings || {}) })
     this.resolveSettingRefs(schema.settings, settings, context)
     await this.renderSettingLiquid(settings, context)
@@ -387,7 +404,7 @@ export default class ShopifyEngine extends LiquidEngine {
     const section = { id, settings, blocks }
     // `section` is ambient inside a section's render subtree on Shopify: snippets
     // like product-media-gallery read section.settings without it being passed
-    const html = await this.engine.parseAndRender(stripSchema(source), { ...this.globals, ...context, section }, { globals: { ...this.globalsFor(context), section } })
+    const html = await this.engine.render(templates, { ...this.globals, ...context, section }, { globals: { ...this.globalsFor(context), section } })
     // Shopify applies the schema's `class` to the section wrapper; themes select
     // on it (e.g. Dawn's StickyHeader reads `.section-header`), so it must be here.
     // Sections rendered inside a group also get `shopify-section-group-<group>-group`
