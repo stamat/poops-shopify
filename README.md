@@ -105,6 +105,22 @@ A runnable example theme lives in [`example/`](example/):
 cd example && npm install && npm run dev
 ```
 
+## Why?
+
+I remembered why I always wanted to build this... 😆
+
+Back in the day my process for Shopify classic themes looked like this:
+- First build a static site with all the styles and JavaScript
+- Convert the static site to a shopify theme and connects to the API
+
+There was no "hey claude convert this static markup to a shopify theme"...
+
+At some point I've built poops and added support for nunjucks (cause it was easier), but then again I was like, why don't I add the liquid support and make my transition from static to a theme easier. Then I figured I could also be a sort of theme builder, which now became: poops-shopify.
+
+This idea was always in my mind, but the AI advancements are merciless... At least it will save on the tokens. 😉
+
 ## License
 
 MIT
+
+Made with ❤️ by [@stamat](https://github.com/stamat)
