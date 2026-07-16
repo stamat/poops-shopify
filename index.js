@@ -199,17 +199,17 @@ export default class ShopifyEngine extends LiquidEngine {
     if (path.extname(templateName) === '.json') {
       tpl = readJson(templateName) || {}
       layoutSpec = tpl.layout
-      content = await this.renderSectionList(tpl.sections || {}, tpl.order, ctx)
+      content = this.renderSectionList(tpl.sections || {}, tpl.order, ctx)
     } else {
       const { content: source } = parseFrontMatter(templateName)
       // 3rd arg sets liquidjs ambient globals — objects like product/settings/routes
       // must survive into {% render %} snippets, which isolate the parent scope
-      content = await this.engine.parseAndRender(stripSchema(source), { ...this.globals, ...ctx }, { globals: this.globalsFor(ctx) })
+      content = this.engine.parseAndRenderSync(stripSchema(source), { ...this.globals, ...ctx }, { globals: this.globalsFor(ctx) })
     }
 
-    const html = await this.wrapInLayout(content, ctx, layoutSpec)
+    const html = this.wrapInLayout(content, ctx, layoutSpec)
     if (name === 'product') this.emitProductAliases(html)
-    if (tpl) await this.emitResourcePages(name, tpl, ctx, layoutSpec)
+    if (tpl) this.emitResourcePages(name, tpl, ctx, layoutSpec)
     return html
   }
 
@@ -241,7 +241,7 @@ export default class ShopifyEngine extends LiquidEngine {
   // suffix "contact" (Shopify's own alternate-template mechanism). The resource rides
   // in via context (_extraGlobals), never a this.globals mutation, so concurrent
   // renders of other templates are unaffected.
-  async emitResourcePages(name, tpl, ctx, layoutSpec) {
+  emitResourcePages(name, tpl, ctx, layoutSpec) {
     if (!this.markupOut) return
     const cfg = this.resourceTemplate(name)
     const dict = cfg && this.globals[cfg.dict]
@@ -275,8 +275,8 @@ export default class ShopifyEngine extends LiquidEngine {
           ...(recommendations ? { recommendations } : {})
         }
       }
-      const content = await this.renderSectionList(tpl.sections || {}, tpl.order, rctx)
-      const html = await this.wrapInLayout(content, rctx, layoutSpec)
+      const content = this.renderSectionList(tpl.sections || {}, tpl.order, rctx)
+      const html = this.wrapInLayout(content, rctx, layoutSpec)
       const dir = path.join(outRoot, res.handle)
       fs.mkdirSync(dir, { recursive: true })
       fs.writeFileSync(path.join(dir, 'index.html'), html)
@@ -361,12 +361,12 @@ export default class ShopifyEngine extends LiquidEngine {
     return handles
   }
 
-  async renderSectionList(sections, order, context, groupName) {
+  renderSectionList(sections, order, context, groupName) {
     const parts = []
     for (const id of order || Object.keys(sections)) {
       const section = sections[id]
       if (!section || section.disabled) continue
-      parts.push(await this.renderSection(section.type, { ...section, id }, context, groupName))
+      parts.push(this.renderSection(section.type, { ...section, id }, context, groupName))
     }
     return parts.join('\n')
   }
@@ -423,7 +423,7 @@ export default class ShopifyEngine extends LiquidEngine {
     return fp
   }
 
-  async renderSection(type, data = {}, context = {}, groupName) {
+  renderSection(type, data = {}, context = {}, groupName) {
     const file = path.join(this.themeDir, 'sections', `${type}.liquid`)
     if (!fs.existsSync(file)) return `<!-- poops-shopify: section '${type}' not found -->`
 
@@ -448,7 +448,7 @@ export default class ShopifyEngine extends LiquidEngine {
     const { schema, templates } = this.parseSection(file)
     const settings = colorizeSettings({ ...settingDefaults(schema.settings), ...(data.settings || {}) })
     this.resolveSettingRefs(schema.settings, settings, mctx)
-    await this.renderSettingLiquid(settings, mctx)
+    this.renderSettingLiquid(settings, mctx)
 
     const blockDefaults = {}
     for (const block of schema.blocks || []) {
@@ -462,7 +462,7 @@ export default class ShopifyEngine extends LiquidEngine {
         const settings = colorizeSettings({ ...blockDefaults[raw.type], ...(raw.settings || {}) })
         const blockSchema = (schema.blocks || []).find(b => b.type === raw.type)
         this.resolveSettingRefs(blockSchema && blockSchema.settings, settings, mctx)
-        await this.renderSettingLiquid(settings, mctx)
+        this.renderSettingLiquid(settings, mctx)
         blocks.push({ id: blockId, type: raw.type, settings, shopify_attributes: '' })
       }
     }
@@ -473,7 +473,7 @@ export default class ShopifyEngine extends LiquidEngine {
     // like product-media-gallery read section.settings without it being passed.
     // Globals are tracked too — {% render %} snippets read page drops from there,
     // not from the scope.
-    const html = await this.engine.render(
+    const html = this.engine.renderSync(
       templates,
       this.trackPageScope({ ...this.globals, ...context, section }, touched),
       { globals: this.trackPageScope({ ...this.globalsFor(context), section }, touched) }
@@ -548,13 +548,13 @@ export default class ShopifyEngine extends LiquidEngine {
   // the page context here. Also resolve shopify:// deep links (url settings like
   // shopify://collections/all) to their storefront paths, as Shopify does.
   // `ctx` is the full render scope (globals already merged in by the caller).
-  async renderSettingLiquid(settings, ctx) {
+  renderSettingLiquid(settings, ctx) {
     for (const [k, v] of Object.entries(settings)) {
       if (typeof v !== 'string') continue
       let val = v
       if (val.includes('shopify://')) val = val.replace(/shopify:\/\//g, '/')
       if (val.includes('{{') || val.includes('{%')) {
-        val = await this.renderSettingTemplate(val, ctx)
+        val = this.renderSettingTemplate(val, ctx)
       }
       if (val !== v) settings[k] = val
     }
@@ -571,7 +571,7 @@ export default class ShopifyEngine extends LiquidEngine {
       tpls = this.engine.parse(src)
       this.settingTplCache.set(src, tpls)
     }
-    return this.engine.render(tpls, ctx, { globals: this.globals })
+    return this.engine.renderSync(tpls, ctx, { globals: this.globals })
   }
 
   // {% section 'name' %} — static sections keep their customized settings in
@@ -585,7 +585,7 @@ export default class ShopifyEngine extends LiquidEngine {
   // rendered on every page; mtime-cached read
   renderSectionGroup(name, context) {
     const group = readJsonCached(path.join(this.themeDir, 'sections', `${name}.json`))
-    if (!group) return Promise.resolve(`<!-- poops-shopify: section group '${name}' not found -->`)
+    if (!group) return `<!-- poops-shopify: section group '${name}' not found -->`
     // Group name = group file handle (header-group), so the wrapper class becomes
     // shopify-section-group-header-group — matching Shopify's real output
     return this.renderSectionList(group.sections || {}, group.order, context, name)
@@ -602,7 +602,7 @@ export default class ShopifyEngine extends LiquidEngine {
     return html.replace(/(\s(?:href|action|src)=")\/(?!\/)([^"]*)/g, (_, attr, rest) => `${attr}${(prefix + rest) || './'}`)
   }
 
-  async wrapInLayout(content, context, layoutSpec) {
+  wrapInLayout(content, context, layoutSpec) {
     if (layoutSpec === false || layoutSpec === 'none') return this.relativizeUrls(content, context)
     const layoutName = typeof layoutSpec === 'string' ? layoutSpec : 'theme'
     const layoutPath = path.join(this.themeDir, 'layout', `${layoutName}.liquid`)
@@ -610,7 +610,7 @@ export default class ShopifyEngine extends LiquidEngine {
 
     const templateName = (context.template && context.template.name) || ''
     const source = fs.readFileSync(layoutPath, 'utf-8')
-    const html = await this.engine.parseAndRender(source, {
+    const html = this.engine.parseAndRenderSync(source, {
       ...this.globals,
       ...context,
       content_for_layout: content,
