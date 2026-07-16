@@ -4,7 +4,7 @@ import LiquidEngine from 'poops/lib/markup/engines/liquid.js'
 import { parseFrontMatter } from 'poops/lib/markup/helpers.js'
 import registerShopifyFilters from './lib/filters.js'
 import registerShopifyTags from './lib/tags.js'
-import { extractSchema, stripSchema, settingDefaults, loadThemeSettings, loadLocale, readJson } from './lib/theme.js'
+import { extractSchema, stripSchema, settingDefaults, loadThemeSettings, loadLocale, readJson, readJsonCached } from './lib/theme.js'
 import { colorizeSettings, handleize } from './lib/shopify-helpers.js'
 
 const DEFAULT_ROUTES = {
@@ -96,11 +96,12 @@ export default class ShopifyEngine extends LiquidEngine {
     registerShopifyTags(this.engine, this)
   }
 
-  // Re-read settings/locales on every page render so watch-mode edits to
-  // config/ and locales/ show up without a restart. A theme has a handful of
-  // pages and these are tiny JSON files — not worth a cache.
+  // Refresh settings/locales on every page render so watch-mode edits to
+  // config/ and locales/ show up without a restart. The loads underneath are
+  // mtime-memoized (theme.js), so per page this costs a few statSyncs, not
+  // re-reading and re-parsing every JSON file. The inlined-asset cache
+  // (filters.js) is mtime-keyed the same way — no clearing needed.
   refreshThemeState() {
-    if (this.assetCache) this.assetCache.clear() // watch-mode edits to inlined assets show up next render
     const { settings, sections } = loadThemeSettings(this.themeDir)
     this.setGlobal('settings', settings)
     this.sectionSettingsData = sections
@@ -476,9 +477,10 @@ export default class ShopifyEngine extends LiquidEngine {
     return this.renderSection(name, { ...(data || {}), id: name }, context)
   }
 
-  // {% sections 'group' %} — section groups are JSON files in sections/
+  // {% sections 'group' %} — section groups are JSON files in sections/,
+  // rendered on every page; mtime-cached read
   renderSectionGroup(name, context) {
-    const group = readJson(path.join(this.themeDir, 'sections', `${name}.json`))
+    const group = readJsonCached(path.join(this.themeDir, 'sections', `${name}.json`))
     if (!group) return Promise.resolve(`<!-- poops-shopify: section group '${name}' not found -->`)
     // Group name = group file handle (header-group), so the wrapper class becomes
     // shopify-section-group-header-group — matching Shopify's real output
