@@ -1,7 +1,7 @@
 {
   "name": "poops-shopify",
   "description": "Shopify Liquid engine for poops — develop Shopify themes locally with mock data, push the theme dir as-is.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "type": "module",
   "main": "index.js",
