@@ -43,6 +43,18 @@ export default class ShopifyEngine extends LiquidEngine {
   get indexableExtensions() { return new Set() }
   get markupExtensions() { return 'liquid|json' }
 
+  // .json under templates/ or sections/ is theme markup (page source or
+  // section group), not mock data — poops' watcher routes those through the
+  // incremental path instead of a data reload + full compile.
+  // ponytail: path test only — a data file configured inside templates/ or
+  // sections/ would misroute; no sane theme does that.
+  isMarkupSource(file) {
+    const rel = path.relative(this.themeDir, path.resolve(file))
+    if (rel.startsWith('..') || path.isAbsolute(rel)) return false
+    const top = rel.split(path.sep)[0]
+    return top === 'templates' || top === 'sections'
+  }
+
   // Shopify routes templates/ at the site root (templates/index.liquid → /),
   // so flatten the templates/ segment out of the preview output path. Known
   // templates are emitted at their Shopify route (product → products/<handle>/
@@ -107,6 +119,7 @@ export default class ShopifyEngine extends LiquidEngine {
       // dep sets describe section source, which can change between compiles —
       // cheap to relearn
       this.sectionDeps.clear()
+      this.sectionFileDeps.clear()
     }
   }
 
@@ -161,6 +174,23 @@ export default class ShopifyEngine extends LiquidEngine {
   async render(templateName, context) {
     this.refreshThemeState()
 
+    // Dep recording for incremental rebuilds — same sync window as the base
+    // engine: snippet touches (via the recording parse cache), section files,
+    // group JSON and the layout all land in this page's set. Settings/locale
+    // JSON is deliberately NOT recorded: those affect every page, and the
+    // watcher's empty-match fallback full-compiles for them anyway.
+    const pageKey = path.resolve(templateName)
+    const pageDeps = new Set([pageKey])
+    this._currentDeps = pageDeps
+    try {
+      return this.renderPage(templateName, context)
+    } finally {
+      this._currentDeps = null
+      this.deps.set(pageKey, pageDeps)
+    }
+  }
+
+  renderPage(templateName, context) {
     const name = path.basename(templateName).replace(/\.(liquid|json)$/, '')
     const ctx = { ...context, template: { name, directory: 'templates', suffix: '' } }
 
@@ -430,80 +460,103 @@ export default class ShopifyEngine extends LiquidEngine {
     if (!this.sectionHtmlCache) {
       this.sectionHtmlCache = new Map()
       this.sectionDeps = new Map()
+      this.sectionFileDeps = new Map()
     }
     const baseKey = `${type} ${groupName || ''} ${context.relativePathPrefix || ''} ${JSON.stringify(data)}`
     const recorded = this.sectionDeps.get(type)
     let key = false
     if (recorded) {
       key = baseKey + this.sectionDepFingerprint(recorded, context)
-      if (this.sectionHtmlCache.has(key)) return this.sectionHtmlCache.get(key)
+      if (this.sectionHtmlCache.has(key)) {
+        // Memo hit: the section's files were never touched during this page's
+        // render — replay the per-type file set so header.liquid still counts
+        // as a dep of every page it lands on.
+        const pageDeps = this._currentDeps
+        if (pageDeps) for (const d of this.sectionFileDeps.get(type) || []) pageDeps.add(d)
+        return this.sectionHtmlCache.get(key)
+      }
     }
     const t0 = process.env.POOPS_SHOPIFY_DEBUG && performance.now()
 
-    const touched = { keys: new Set() }
-    // One merged tracked scope for settings resolution and the render itself —
-    // never spread the proxy (spreading reads every key and false-positives).
-    const mctx = this.trackPageScope({ ...this.globals, ...context }, touched)
+    // File-dep tee: everything this render touches (the section's own file,
+    // snippets via the parse cache) goes to both the page's dep set and a
+    // per-type set replayed on memo hits above. Nested sections chain — the
+    // outer tee is this render's pageDeps.
+    const pageDeps = this._currentDeps
+    let fileDeps = this.sectionFileDeps.get(type)
+    if (!fileDeps) { fileDeps = new Set(); this.sectionFileDeps.set(type, fileDeps) }
+    fileDeps.add(file)
+    if (pageDeps) pageDeps.add(file)
+    this._currentDeps = { add: (d) => { fileDeps.add(d); if (pageDeps) pageDeps.add(d) } }
 
-    const { schema, templates } = this.parseSection(file)
-    const settings = colorizeSettings({ ...settingDefaults(schema.settings), ...(data.settings || {}) })
-    this.resolveSettingRefs(schema.settings, settings, mctx)
-    this.renderSettingLiquid(settings, mctx)
+    try {
+      const touched = { keys: new Set() }
+      // One merged tracked scope for settings resolution and the render itself —
+      // never spread the proxy (spreading reads every key and false-positives).
+      const mctx = this.trackPageScope({ ...this.globals, ...context }, touched)
 
-    const blockDefaults = {}
-    for (const block of schema.blocks || []) {
-      blockDefaults[block.type] = settingDefaults(block.settings)
-    }
-    const blocks = []
-    if (data.blocks) {
-      for (const blockId of data.block_order || Object.keys(data.blocks)) {
-        const raw = data.blocks[blockId]
-        if (!raw) continue // stale block_order id — skip rather than kill the build
-        const settings = colorizeSettings({ ...blockDefaults[raw.type], ...(raw.settings || {}) })
-        const blockSchema = (schema.blocks || []).find(b => b.type === raw.type)
-        this.resolveSettingRefs(blockSchema && blockSchema.settings, settings, mctx)
-        this.renderSettingLiquid(settings, mctx)
-        blocks.push({ id: blockId, type: raw.type, settings, shopify_attributes: '' })
+      const { schema, templates } = this.parseSection(file)
+      const settings = colorizeSettings({ ...settingDefaults(schema.settings), ...(data.settings || {}) })
+      this.resolveSettingRefs(schema.settings, settings, mctx)
+      this.renderSettingLiquid(settings, mctx)
+
+      const blockDefaults = {}
+      for (const block of schema.blocks || []) {
+        blockDefaults[block.type] = settingDefaults(block.settings)
       }
-    }
+      const blocks = []
+      if (data.blocks) {
+        for (const blockId of data.block_order || Object.keys(data.blocks)) {
+          const raw = data.blocks[blockId]
+          if (!raw) continue // stale block_order id — skip rather than kill the build
+          const settings = colorizeSettings({ ...blockDefaults[raw.type], ...(raw.settings || {}) })
+          const blockSchema = (schema.blocks || []).find(b => b.type === raw.type)
+          this.resolveSettingRefs(blockSchema && blockSchema.settings, settings, mctx)
+          this.renderSettingLiquid(settings, mctx)
+          blocks.push({ id: blockId, type: raw.type, settings, shopify_attributes: '' })
+        }
+      }
 
-    const id = data.id || type
-    const section = { id, settings, blocks }
-    // `section` is ambient inside a section's render subtree on Shopify: snippets
-    // like product-media-gallery read section.settings without it being passed.
-    // Globals are tracked too — {% render %} snippets read page drops from there,
-    // not from the scope.
-    const html = this.engine.renderSync(
-      templates,
-      this.trackPageScope({ ...this.globals, ...context, section }, touched),
-      { globals: this.trackPageScope({ ...this.globalsFor(context), section }, touched) }
-    )
-    // Shopify applies the schema's `class` to the section wrapper; themes select
-    // on it (e.g. Dawn's StickyHeader reads `.section-header`), so it must be here.
-    // Sections rendered inside a group also get `shopify-section-group-<group>-group`
-    // — Dawn gates the header's z-index on it (.section-header.shopify-section-group-
-    // header-group), so without it the header sits under z-indexed sections like the hero.
-    const groupClass = groupName ? ` shopify-section-group-${groupName}` : ''
-    const wrapperClass = schema.class ? `shopify-section${groupClass} ${schema.class}` : `shopify-section${groupClass}`
-    const out = `<div id="shopify-section-${id}" class="${wrapperClass}">${html}</div>`
+      const id = data.id || type
+      const section = { id, settings, blocks }
+      // `section` is ambient inside a section's render subtree on Shopify: snippets
+      // like product-media-gallery read section.settings without it being passed.
+      // Globals are tracked too — {% render %} snippets read page drops from there,
+      // not from the scope.
+      const html = this.engine.renderSync(
+        templates,
+        this.trackPageScope({ ...this.globals, ...context, section }, touched),
+        { globals: this.trackPageScope({ ...this.globalsFor(context), section }, touched) }
+      )
+      // Shopify applies the schema's `class` to the section wrapper; themes select
+      // on it (e.g. Dawn's StickyHeader reads `.section-header`), so it must be here.
+      // Sections rendered inside a group also get `shopify-section-group-<group>-group`
+      // — Dawn gates the header's z-index on it (.section-header.shopify-section-group-
+      // header-group), so without it the header sits under z-indexed sections like the hero.
+      const groupClass = groupName ? ` shopify-section-group-${groupName}` : ''
+      const wrapperClass = schema.class ? `shopify-section${groupClass} ${schema.class}` : `shopify-section${groupClass}`
+      const out = `<div id="shopify-section-${id}" class="${wrapperClass}">${html}</div>`
 
-    if (!recorded) {
-      // First render of this type: its touched keys become the dependency set,
-      // and the entry is keyed under them.
-      this.sectionDeps.set(type, touched.keys)
-      this.sectionHtmlCache.set(baseKey + this.sectionDepFingerprint(touched.keys, context), out)
-    } else {
-      // A conditional branch may read keys earlier renders didn't — union them
-      // in. This render's pre-computed key lacks the new keys, so don't cache
-      // it; future lookups use the grown set.
-      let grew = false
-      for (const k of touched.keys) if (!recorded.has(k)) { recorded.add(k); grew = true }
-      if (!grew) this.sectionHtmlCache.set(key, out)
+      if (!recorded) {
+        // First render of this type: its touched keys become the dependency set,
+        // and the entry is keyed under them.
+        this.sectionDeps.set(type, touched.keys)
+        this.sectionHtmlCache.set(baseKey + this.sectionDepFingerprint(touched.keys, context), out)
+      } else {
+        // A conditional branch may read keys earlier renders didn't — union them
+        // in. This render's pre-computed key lacks the new keys, so don't cache
+        // it; future lookups use the grown set.
+        let grew = false
+        for (const k of touched.keys) if (!recorded.has(k)) { recorded.add(k); grew = true }
+        if (!grew) this.sectionHtmlCache.set(key, out)
+      }
+      if (process.env.POOPS_SHOPIFY_DEBUG) {
+        console.log(`[memo] render ${type} ms=${(performance.now() - t0).toFixed(1)} keys=${[...touched.keys]}`)
+      }
+      return out
+    } finally {
+      this._currentDeps = pageDeps
     }
-    if (process.env.POOPS_SHOPIFY_DEBUG) {
-      console.log(`[memo] render ${type} ms=${(performance.now() - t0).toFixed(1)} keys=${[...touched.keys]}`)
-    }
-    return out
   }
 
   // collection/product picker settings hold a handle string in poops (there's no
@@ -584,8 +637,10 @@ export default class ShopifyEngine extends LiquidEngine {
   // {% sections 'group' %} — section groups are JSON files in sections/,
   // rendered on every page; mtime-cached read
   renderSectionGroup(name, context) {
-    const group = readJsonCached(path.join(this.themeDir, 'sections', `${name}.json`))
+    const groupFile = path.join(this.themeDir, 'sections', `${name}.json`)
+    const group = readJsonCached(groupFile)
     if (!group) return `<!-- poops-shopify: section group '${name}' not found -->`
+    if (this._currentDeps) this._currentDeps.add(groupFile)
     // Group name = group file handle (header-group), so the wrapper class becomes
     // shopify-section-group-header-group — matching Shopify's real output
     return this.renderSectionList(group.sections || {}, group.order, context, name)
@@ -607,6 +662,7 @@ export default class ShopifyEngine extends LiquidEngine {
     const layoutName = typeof layoutSpec === 'string' ? layoutSpec : 'theme'
     const layoutPath = path.join(this.themeDir, 'layout', `${layoutName}.liquid`)
     if (!fs.existsSync(layoutPath)) return this.relativizeUrls(content, context)
+    if (this._currentDeps) this._currentDeps.add(layoutPath)
 
     const templateName = (context.template && context.template.name) || ''
     const source = fs.readFileSync(layoutPath, 'utf-8')

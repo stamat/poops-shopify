@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, describe, expect, it } from '@jest/globals'
+import { afterAll, beforeAll, describe, expect, it, jest } from '@jest/globals'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
@@ -495,5 +495,56 @@ describe('helpers', () => {
     expect(modifyFont(modifyFont(f, 'weight', 'bold'), 'style', 'italic').handle).toBe('assistant_i7')
     // colorizeSettings wraps font handles in the settings tree
     expect(colorizeSettings({ type_body_font: 'pt_sans_i7' }).type_body_font.weight).toBe(700)
+  })
+})
+
+describe('incremental deps', () => {
+  it('records page → section/snippet/layout deps during render', async() => {
+    const engine = makeEngine()
+    const page = path.join(themeDir, 'templates', 'index.liquid')
+    await engine.render(page, { page: {} })
+    expect(engine.pagesDependingOn(path.join(themeDir, 'sections', 'hero.liquid'))).toContain(page)
+    expect(engine.pagesDependingOn(path.join(themeDir, 'layout', 'theme.liquid'))).toContain(page)
+
+    const productPage = path.join(themeDir, 'templates', 'product.liquid')
+    await engine.render(productPage, { page: {}, product: { title: 'Cup', price: 1250 } })
+    expect(engine.pagesDependingOn(path.join(themeDir, 'snippets', 'price.liquid'))).toContain(productPage)
+  })
+
+  it('replays section file deps on section-memo hits', async() => {
+    const tpl = JSON.stringify({ sections: { m: { type: 'hero', settings: { heading: 'Same' } } }, order: ['m'] })
+    write('templates/memo-a.json', tpl)
+    write('templates/memo-b.json', tpl)
+    const engine = makeEngine()
+    const a = path.join(themeDir, 'templates', 'memo-a.json')
+    const b = path.join(themeDir, 'templates', 'memo-b.json')
+    await engine.render(a, { page: {} })
+    // identical section instance + prefix → second page serves hero from the
+    // section-output memo, never touching hero.liquid — deps must be replayed
+    const renderSpy = jest.spyOn(engine.engine, 'renderSync')
+    await engine.render(b, { page: {} })
+    expect(renderSpy).not.toHaveBeenCalled()
+    const pages = engine.pagesDependingOn(path.join(themeDir, 'sections', 'hero.liquid'))
+    expect(pages).toContain(a)
+    expect(pages).toContain(b)
+  })
+
+  it('records section-group json deps through {% sections %}', async() => {
+    write('sections/head-group.json', JSON.stringify({ sections: { h: { type: 'hero' } }, order: ['h'] }))
+    write('layout/grouped.liquid', "{% sections 'head-group' %}{{ content_for_layout }}")
+    write('templates/grouped.json', JSON.stringify({ layout: 'grouped', sections: {}, order: [] }))
+    const engine = makeEngine()
+    const page = path.join(themeDir, 'templates', 'grouped.json')
+    await engine.render(page, { page: {} })
+    expect(engine.pagesDependingOn(path.join(themeDir, 'sections', 'head-group.json'))).toContain(page)
+    expect(engine.pagesDependingOn(path.join(themeDir, 'sections', 'hero.liquid'))).toContain(page)
+  })
+
+  it('claims templates/ and sections/ json as markup, not config or mocks', () => {
+    const engine = makeEngine()
+    expect(engine.isMarkupSource(path.join(themeDir, 'templates', 'index.json'))).toBe(true)
+    expect(engine.isMarkupSource(path.join(themeDir, 'sections', 'head-group.json'))).toBe(true)
+    expect(engine.isMarkupSource(path.join(themeDir, 'config', 'settings_data.json'))).toBe(false)
+    expect(engine.isMarkupSource(path.join(themeDir, '..', 'mocks', 'product.json'))).toBe(false)
   })
 })
