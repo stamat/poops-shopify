@@ -96,6 +96,20 @@ export default class ShopifyEngine extends LiquidEngine {
     registerShopifyTags(this.engine, this)
   }
 
+  // Called by poops once per compile. Rendered-section memo must not outlive a
+  // compile (mocks/settings edits would go stale); the parsed-section cache
+  // (parseSection) is mtime-validated and survives on purpose.
+  clearCache() {
+    super.clearCache()
+    if (this.settingTplCache) this.settingTplCache.clear()
+    if (this.sectionHtmlCache) {
+      this.sectionHtmlCache.clear()
+      // dep sets describe section source, which can change between compiles —
+      // cheap to relearn
+      this.sectionDeps.clear()
+    }
+  }
+
   // Refresh settings/locales on every page render so watch-mode edits to
   // config/ and locales/ show up without a restart. The loads underneath are
   // mtime-memoized (theme.js), so per page this costs a few statSyncs, not
@@ -375,14 +389,66 @@ export default class ShopifyEngine extends LiquidEngine {
     return entry
   }
 
+  // Header/footer groups and most sections render byte-identical HTML on every
+  // page — only relativePathPrefix and page-context drops (product, template, …)
+  // vary. Memoize rendered section HTML per compile, keyed by (type, instance
+  // data, prefix, group) plus a fingerprint of the page-scoped values the
+  // section actually reads. While rendering, every scope lookup of a
+  // page-scoped key is recorded via a Proxy; the union of keys a type has read
+  // becomes its dependency set, and their JSON values join the cache key. Sound
+  // because a render can only diverge between two pages by reading a value that
+  // differs — and that read lands in the dependency set, changing the key.
+  // ponytail: deps are whole top-level drops — a header that reads only
+  // page.title still misses when any page front-matter field changes. Upgrade
+  // path if sub-second matters: track property paths, fingerprint leaf values.
+  static PAGE_SCOPED_KEYS = /^(product|collection|article|blog|template|search|request|page|page_\w+|customer|recommendations|linklists|current_tags|current_page|canonical_url|handle)$/
+
+  trackPageScope(obj, touched) {
+    return new Proxy(obj, {
+      get(target, key) {
+        if (typeof key === 'string' && ShopifyEngine.PAGE_SCOPED_KEYS.test(key)) touched.keys.add(key)
+        return target[key]
+      }
+    })
+  }
+
+  // The page-scoped value a section render sees for `key` — context (which
+  // mirrors _extraGlobals) shadows the mock global.
+  sectionDepFingerprint(deps, context) {
+    let fp = ''
+    for (const k of [...deps].sort()) {
+      const v = k in context ? context[k] : this.globals[k]
+      fp += `|${k}=${JSON.stringify(v)}`
+    }
+    return fp
+  }
+
   async renderSection(type, data = {}, context = {}, groupName) {
     const file = path.join(this.themeDir, 'sections', `${type}.liquid`)
     if (!fs.existsSync(file)) return `<!-- poops-shopify: section '${type}' not found -->`
 
+    if (!this.sectionHtmlCache) {
+      this.sectionHtmlCache = new Map()
+      this.sectionDeps = new Map()
+    }
+    const baseKey = `${type} ${groupName || ''} ${context.relativePathPrefix || ''} ${JSON.stringify(data)}`
+    const recorded = this.sectionDeps.get(type)
+    let key = false
+    if (recorded) {
+      key = baseKey + this.sectionDepFingerprint(recorded, context)
+      if (this.sectionHtmlCache.has(key)) return this.sectionHtmlCache.get(key)
+    }
+    const t0 = process.env.POOPS_SHOPIFY_DEBUG && performance.now()
+
+    const touched = { keys: new Set() }
+    // One merged tracked scope for settings resolution and the render itself —
+    // never spread the proxy (spreading reads every key and false-positives).
+    const mctx = this.trackPageScope({ ...this.globals, ...context }, touched)
+
     const { schema, templates } = this.parseSection(file)
     const settings = colorizeSettings({ ...settingDefaults(schema.settings), ...(data.settings || {}) })
-    this.resolveSettingRefs(schema.settings, settings, context)
-    await this.renderSettingLiquid(settings, context)
+    this.resolveSettingRefs(schema.settings, settings, mctx)
+    await this.renderSettingLiquid(settings, mctx)
 
     const blockDefaults = {}
     for (const block of schema.blocks || []) {
@@ -395,8 +461,8 @@ export default class ShopifyEngine extends LiquidEngine {
         if (!raw) continue // stale block_order id — skip rather than kill the build
         const settings = colorizeSettings({ ...blockDefaults[raw.type], ...(raw.settings || {}) })
         const blockSchema = (schema.blocks || []).find(b => b.type === raw.type)
-        this.resolveSettingRefs(blockSchema && blockSchema.settings, settings, context)
-        await this.renderSettingLiquid(settings, context)
+        this.resolveSettingRefs(blockSchema && blockSchema.settings, settings, mctx)
+        await this.renderSettingLiquid(settings, mctx)
         blocks.push({ id: blockId, type: raw.type, settings, shopify_attributes: '' })
       }
     }
@@ -404,8 +470,14 @@ export default class ShopifyEngine extends LiquidEngine {
     const id = data.id || type
     const section = { id, settings, blocks }
     // `section` is ambient inside a section's render subtree on Shopify: snippets
-    // like product-media-gallery read section.settings without it being passed
-    const html = await this.engine.render(templates, { ...this.globals, ...context, section }, { globals: { ...this.globalsFor(context), section } })
+    // like product-media-gallery read section.settings without it being passed.
+    // Globals are tracked too — {% render %} snippets read page drops from there,
+    // not from the scope.
+    const html = await this.engine.render(
+      templates,
+      this.trackPageScope({ ...this.globals, ...context, section }, touched),
+      { globals: this.trackPageScope({ ...this.globalsFor(context), section }, touched) }
+    )
     // Shopify applies the schema's `class` to the section wrapper; themes select
     // on it (e.g. Dawn's StickyHeader reads `.section-header`), so it must be here.
     // Sections rendered inside a group also get `shopify-section-group-<group>-group`
@@ -413,7 +485,25 @@ export default class ShopifyEngine extends LiquidEngine {
     // header-group), so without it the header sits under z-indexed sections like the hero.
     const groupClass = groupName ? ` shopify-section-group-${groupName}` : ''
     const wrapperClass = schema.class ? `shopify-section${groupClass} ${schema.class}` : `shopify-section${groupClass}`
-    return `<div id="shopify-section-${id}" class="${wrapperClass}">${html}</div>`
+    const out = `<div id="shopify-section-${id}" class="${wrapperClass}">${html}</div>`
+
+    if (!recorded) {
+      // First render of this type: its touched keys become the dependency set,
+      // and the entry is keyed under them.
+      this.sectionDeps.set(type, touched.keys)
+      this.sectionHtmlCache.set(baseKey + this.sectionDepFingerprint(touched.keys, context), out)
+    } else {
+      // A conditional branch may read keys earlier renders didn't — union them
+      // in. This render's pre-computed key lacks the new keys, so don't cache
+      // it; future lookups use the grown set.
+      let grew = false
+      for (const k of touched.keys) if (!recorded.has(k)) { recorded.add(k); grew = true }
+      if (!grew) this.sectionHtmlCache.set(key, out)
+    }
+    if (process.env.POOPS_SHOPIFY_DEBUG) {
+      console.log(`[memo] render ${type} ms=${(performance.now() - t0).toFixed(1)} keys=${[...touched.keys]}`)
+    }
+    return out
   }
 
   // collection/product picker settings hold a handle string in poops (there's no
@@ -457,17 +547,31 @@ export default class ShopifyEngine extends LiquidEngine {
   // a setting value as an inert string, so evaluate any setting holding Liquid against
   // the page context here. Also resolve shopify:// deep links (url settings like
   // shopify://collections/all) to their storefront paths, as Shopify does.
-  async renderSettingLiquid(settings, context) {
-    const ctx = { ...this.globals, ...context }
+  // `ctx` is the full render scope (globals already merged in by the caller).
+  async renderSettingLiquid(settings, ctx) {
     for (const [k, v] of Object.entries(settings)) {
       if (typeof v !== 'string') continue
       let val = v
       if (val.includes('shopify://')) val = val.replace(/shopify:\/\//g, '/')
       if (val.includes('{{') || val.includes('{%')) {
-        val = await this.engine.parseAndRender(val, ctx, { globals: this.globals })
+        val = await this.renderSettingTemplate(val, ctx)
       }
       if (val !== v) settings[k] = val
     }
+  }
+
+  // The same handful of setting strings gets parsed for every section instance
+  // on every page — parse each distinct source once, render per use. Unbounded
+  // growth is fine: settings strings are small and finite per theme; cleared in
+  // clearCache() for hygiene.
+  renderSettingTemplate(src, ctx) {
+    if (!this.settingTplCache) this.settingTplCache = new Map()
+    let tpls = this.settingTplCache.get(src)
+    if (!tpls) {
+      tpls = this.engine.parse(src)
+      this.settingTplCache.set(src, tpls)
+    }
+    return this.engine.render(tpls, ctx, { globals: this.globals })
   }
 
   // {% section 'name' %} — static sections keep their customized settings in
