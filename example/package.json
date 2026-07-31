@@ -9,7 +9,7 @@
     "push": "shopify theme push --path theme"
   },
   "dependencies": {
-    "poops": "^1.5.2",
+    "poops": "^2.0.0",
     "poops-shopify": "file:.."
   }
 }

@@ -195,13 +195,6 @@ describe('rendering', () => {
     expect(html).toContain('#00ff00')
   })
 
-  it('injects livereload into content_for_header when configured', async() => {
-    const engine = makeEngine()
-    engine.setGlobal('livereload_port', 35729)
-    const html = await engine.render(path.join(themeDir, 'templates', 'index.liquid'), { page: {} })
-    expect(html).toContain('http://localhost:35729/livereload.js')
-  })
-
   it('maps output paths to .html, flattens templates/, routes known templates', () => {
     const engine = makeEngine()
     // unknown/alternate templates fall back to flat .html

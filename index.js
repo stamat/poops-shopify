@@ -681,13 +681,11 @@ export default class ShopifyEngine extends LiquidEngine {
     // Shopify injects the global `Shopify` object via content_for_header, before
     // any theme script. Layouts run inline scripts (Dawn: `if (Shopify.designMode)`)
     // that assume it exists, so stub it here or they throw "Shopify is not defined".
+    // Live reload needs nothing here since poops 2.0 — the dev server appends its
+    // own client script to the response.
     const shop = this.globals.shop || {}
     const routes = this.globals.routes || {}
     const designMode = !!(this.globals.request && this.globals.request.design_mode)
-    const shopify = `<script>window.Shopify=window.Shopify||{};Shopify.designMode=${designMode};Shopify.routes=${JSON.stringify(routes)};Shopify.currency=${JSON.stringify({ active: shop.currency || 'USD', rate: '1.0' })};Shopify.locale='en';Shopify.country='US';Shopify.shop=${JSON.stringify(shop.permanent_domain || 'dev-shop.myshopify.com')};Shopify.cdnHost='';Shopify.PaymentButton=null;</script>`
-
-    const port = this.globals.livereload_port
-    const livereload = port ? `<script src="http://localhost:${port}/livereload.js?snipver=1"></script>` : ''
-    return shopify + livereload
+    return `<script>window.Shopify=window.Shopify||{};Shopify.designMode=${designMode};Shopify.routes=${JSON.stringify(routes)};Shopify.currency=${JSON.stringify({ active: shop.currency || 'USD', rate: '1.0' })};Shopify.locale='en';Shopify.country='US';Shopify.shop=${JSON.stringify(shop.permanent_domain || 'dev-shop.myshopify.com')};Shopify.cdnHost='';Shopify.PaymentButton=null;</script>`
   }
 }
