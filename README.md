@@ -39,16 +39,18 @@ dist/                   ← local preview output (gitignore it)
   "markup": {
     "in": "theme",
     "out": "dist",
-    "engine": "poops-shopify",
-    "includePaths": [
-      "layout",
-      "sections",
-      "snippets",
-      "config",
-      "locales",
-      "assets"
-    ],
-    "data": ["../mocks"]
+    "options": {
+      "engine": "poops-shopify",
+      "includePaths": [
+        "layout",
+        "sections",
+        "snippets",
+        "config",
+        "locales",
+        "assets"
+      ],
+      "data": ["../mocks"]
+    }
   },
   "copy": [{ "in": "theme/assets", "out": "dist" }],
   "serve": { "port": 4141, "base": "/dist" },
